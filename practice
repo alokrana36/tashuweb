@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>hii, Tashu here</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ff4f9e;
+            --pink2: #ff9bc9;
+            --white: #ffffff;
+            --ink: #1e1e24;
+            --glass: rgba(255, 255, 255, .22);
+            --blur: 12px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font-family: Poppins, system-ui, Arial, sans-serif;
+            color: var(--white);
+            background: #fff;
+            overflow: hidden;
+            /* keeps video fullbleed */
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            padding-top: env(safe-area-inset-top);
+        }
+
+        /* Fullscreen background video */
+        .bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            object-fit: cover;
+            /* ✅ ensures video always fills entire screen */
+        }
+
+        /* Soft overlay for contrast */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background:
+                radial-gradient(60% 40% at 70% 10%, rgba(255, 255, 255, .08), transparent 60%),
+                linear-gradient(180deg, rgba(255, 255, 255, .10), rgba(0, 0, 0, .35));
+            backdrop-filter: blur(2px);
+        }
+
+        /* Sparkles */
+        .sparkles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            background:
+                radial-gradient(4px 4px at 20% 30%, rgba(255, 255, 255, .55) 0, transparent 60%),
+                radial-gradient(3px 3px at 70% 20%, rgba(255, 155, 201, .6) 0, transparent 60%),
+                radial-gradient(3px 3px at 40% 70%, rgba(255, 255, 255, .5) 0, transparent 60%),
+                radial-gradient(2.5px 2.5px at 85% 65%, rgba(255, 79, 158, .5) 0, transparent 60%),
+                radial-gradient(2.5px 2.5px at 15% 80%, rgba(255, 255, 255, .5) 0, transparent 60%);
+            animation: twinkle 6s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, .35));
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: .45;
+                transform: scale(1)
+            }
+
+            100% {
+                opacity: .85;
+                transform: scale(1.04)
+            }
+        }
+
+        /* Glassy nav strip (subtle) */
+        .nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            padding: 14px 16px;
+            backdrop-filter: blur(var(--blur)) saturate(140%);
+            background: linear-gradient(90deg, rgba(255, 79, 158, .22), rgba(255, 155, 201, .18));
+            border-bottom: 1px solid rgba(255, 255, 255, .25);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .2);
+            border: 1px solid rgba(255, 255, 255, .35);
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        /* Center hero with giant headline */
+        .hero {
+            position: fixed;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+        }
+
+        .title {
+            margin: 0;
+            line-height: 1;
+            text-align: center;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: clamp(40px, 10vw, 120px);
+            background: linear-gradient(90deg, var(--pink), var(--pink2), var(--pink));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+            text-shadow: 0 6px 24px rgba(255, 79, 158, .55);
+        }
+
+        @keyframes shine {
+            0% {
+                background-position: 0% 50%
+            }
+
+            100% {
+                background-position: 200% 50%
+            }
+        }
+
+        /* Fancy underline accent */
+        .accent {
+            margin: 14px auto 0;
+            width: min(520px, 80vw);
+            height: 10px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, rgba(255, 79, 158, .9), rgba(255, 155, 201, .7), rgba(255, 79, 158, .9));
+            filter: blur(8px);
+            opacity: .75;
+            box-shadow: 0 0 40px rgba(255, 79, 158, .55);
+        }
+
+        /* Chip row */
+        .chips {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .chips a {
+            text-decoration: none;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            color: #fff;
+            background: linear-gradient(90deg, var(--pink), var(--pink2));
+            box-shadow: 0 4px 14px rgba(255, 79, 158, .3);
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .chip:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(255, 79, 158, .4);
+        }
+
+        .chip:active {
+            transform: scale(0.95);
+        }
+
+        /* Mobile safe spacing */
+        @media (max-width:390px) {
+            .nav {
+                padding: 12px
+            }
+
+            .badge {
+                font-size: 11px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background video -->
+    <video class="bg" autoplay muted loop playsinline>
+        <source src="tashu1.mp4" type="video/mp4" />
+    </video>
+    <div class="overlay"></div>
+    <div class="sparkles" aria-hidden="true"></div>
+
+    <!-- Minimal glass nav with a small badge -->
+    <nav class="nav">
+        <div class="badge">🌺🌺🌺🌺</div>
+    </nav>
+
+    <!-- Centered hero -->
+    <main class="hero" role="main" aria-label="Intro">
+        <div>
+            <h1 class="title">hii, Tashu here</h1>
+            <div class="accent" aria-hidden="true"></div>
+            <div class="chips" aria-label="tags">
+                <a href="index.html">
+                    <span class="chip">💖 Photos</span>
+                </a>
+                <a href="contact.html">
+                    <span class="chip">📩 Contact</span>
+                </a>
+                <span class="chip">📱 iPhone-ready</span>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

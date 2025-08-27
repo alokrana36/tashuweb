@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>🌸 Pink Garden Gate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --pink:#ff4f9a;
+      --pink-2:#ff7ab6;
+      --pink-3:#ffd6ec;
+      --rose:#ff8fb3;
+      --white:#fff;
+      --ink:#3a2e35;
+      --error:#d32f2f;
+      --glass: rgba(255,255,255,.78);
+      --shadow: 0 20px 60px -20px rgba(255,79,154,.45), 0 12px 34px -18px rgba(0,0,0,.25);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+
+    /* Background */
+    body{
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 800px at 15% 10%, #ffe9f5 0, transparent 60%),
+        radial-gradient(900px 600px at 85% -5%, #ffe1ef 0, transparent 60%),
+        linear-gradient(180deg, #fff7fb, #ffffff);
+      min-height:100dvh;
+      overflow:hidden;
+    }
+    .bg-sheen{
+      position:fixed; inset:-30% -10%;
+      background: conic-gradient(from 180deg at 50% 50%, rgba(255,255,255,.0) 0 20%, rgba(255,255,255,.35) 30%, rgba(255,255,255,.0) 40% 100%);
+      filter: blur(30px);
+      opacity:.35;
+      animation: sheen 10s linear infinite;
+      pointer-events:none;
+    }
+    @keyframes sheen{ to { transform: rotate(360deg) } }
+    .blob{position:fixed;border-radius:50%;filter:blur(22px);mix-blend-mode:multiply;pointer-events:none;opacity:.55}
+    .b1{width:420px;height:420px;left:-120px;top:-120px;background:radial-gradient(circle at 30% 30%, #ffd1e6, var(--pink-2));animation:float1 13s ease-in-out infinite}
+    .b2{width:520px;height:520px;right:-160px;bottom:-180px;background:radial-gradient(circle at 70% 30%, #ffe6f3, var(--pink));animation:float2 15s ease-in-out infinite}
+    @keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,40px)}}
+    @keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,-30px)}}
+
+    /* Petals & sparkles (login only) */
+    .petal, .sparkle{position:fixed; pointer-events:none; z-index:1}
+    .petal{
+      width:18px;height:18px;opacity:.9;
+      background: radial-gradient(circle at 30% 30%, var(--pink), var(--pink-3));
+      border-radius:60% 40% 60% 40% / 60% 60% 40% 40%;
+      animation: fall 12s linear infinite;
+      filter: drop-shadow(0 4px 10px rgba(255,79,154,.25));
+    }
+    .sparkle{
+      width:6px;height:6px;border-radius:50%;
+      background: radial-gradient(circle, #fff, rgba(255,255,255,.0) 70%);
+      animation: twinkle 3s ease-in-out infinite;
+      opacity:.7;
+    }
+    @keyframes fall{
+      0%   { transform: translateY(-10vh) rotate(0deg); opacity:0 }
+      10%  { opacity:1 }
+      100% { transform: translateY(110vh) rotate(360deg); opacity:0 }
+    }
+    @keyframes twinkle{
+      0%,100%{ transform: scale(.6); opacity:.4 }
+      50%{ transform: scale(1.2); opacity:1 }
+    }
+
+    /* Login card */
+    .wrap{min-height:100dvh; display:grid; place-items:center; padding: clamp(18px, 3vw, 36px)}
+    .card{
+      width:min(92vw, 360px);
+      background: var(--glass);
+      backdrop-filter: blur(14px) saturate(1.1);
+      -webkit-backdrop-filter: blur(14px) saturate(1.1);
+      border:1px solid rgba(255,255,255,.75);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:24px 22px;
+      z-index:2;
+      position:relative;
+      overflow:hidden;
+      animation: pop .6s cubic-bezier(.2,.8,.2,1) both;
+    }
+    @keyframes pop{ from{opacity:0; transform: translateY(8px) scale(.98)} to{opacity:1; transform: translateY(0) scale(1)} }
+    .shine{ position:absolute; inset:0; background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.35) 45%, transparent 60%); transform:translateX(-100%); animation: shine 6s linear infinite}
+    @keyframes shine{ to { transform: translateX(100%) } }
+    .brand{display:flex; align-items:center; gap:12px; margin-bottom:8px}
+    .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg, var(--pink), var(--rose)); box-shadow:0 10px 28px -12px rgba(255,79,154,.7)}
+    h1{font-size: clamp(22px, 3.4vw, 28px); margin:0}
+    p.sub{margin:.25rem 0 1.1rem; color:#6b5d64; font-size:.98rem}
+    form{display:grid; gap:12px}
+    label{font-size:.9rem; color:#6b5d64}
+    .field{position:relative}
+    .icon{ position:absolute; left:12px; top:50%; transform:translateY(-50%); width:20px;height:20px; opacity:.6 }
+    input{
+      width:100%; padding:13px 14px 13px 44px; border-radius:16px;
+      border:2px solid #f2c9dc; background:#fff; outline:none; font-size:1rem; transition:.2s ease;
+    }
+    input:focus{border-color: var(--pink-2); box-shadow:0 0 0 5px rgba(255,122,182,.18)}
+    .btn{
+      appearance:none; border:0; cursor:pointer; padding:13px 16px; border-radius:16px; font-weight:700;
+      background: linear-gradient(135deg, var(--pink), var(--pink-2)); color:white; box-shadow: 0 14px 36px -12px rgba(255,79,154,.7);
+      transition: transform .08s ease, box-shadow .2s ease;
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 18px 40px -12px rgba(255,79,154,.8) }
+    .btn:active{ transform: translateY(0) scale(.99) }
+    .hint{ color:#6b5d64; font-size:.9rem; text-align:center; margin-top:4px }
+    .error{ display:none; margin-top:6px; color:var(--error); font-size:.94rem }
+
+    /* Unlocked state */
+    body.unlocked{ overflow:hidden }
+    body.unlocked .petal, body.unlocked .sparkle{ display:none }
+    #content{ display:none }
+    #content.show{ display:block; position:fixed; inset:0; z-index:3; background:#fff }
+
+    /* Frame and iframe */
+    .frame{
+      position:absolute; inset:0;
+      background:
+        radial-gradient(1000px 600px at 100% -10%, #ffe6f3 0, transparent 60%),
+        radial-gradient(900px 560px at -10% 110%, #ffd1e6 0, transparent 60%);
+    }
+    .frame::before{
+      content:""; position:absolute; inset: clamp(6px, 1vw, 12px);
+      border-radius: 28px; padding: 2px;
+      background: linear-gradient(130deg, rgba(255,79,154,.0), rgba(255,79,154,.35), rgba(255,122,182,.0));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      animation: borderGlow 3.2s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes borderGlow{
+      0%,100%{ filter: drop-shadow(0 0 0 rgba(255,79,154,.0)); opacity:.6 }
+      50%{ filter: drop-shadow(0 0 16px rgba(255,79,154,.45)); opacity:1 }
+    }
+    iframe{
+      position:absolute; inset: clamp(12px, 2vw, 24px);
+      width: calc(100% - clamp(24px, 4vw, 48px));
+      height: calc(100% - clamp(24px, 4vw, 48px));
+      border:0; display:block; border-radius: 24px; background:#fff;
+      box-shadow: 0 24px 60px -24px rgba(0,0,0,.25);
+    }
+
+    /* Back button */
+    .back{
+      position:fixed; bottom:18px; left:18px; z-index:5;
+      background: var(--pink);
+      color:#fff; border:none; border-radius:10px;
+      font-size:.8rem; padding:6px 12px; cursor:pointer;
+      box-shadow: 0 6px 16px rgba(255,79,154,.3);
+      display:none; opacity:.92; transition:.2s;
+    }
+    .back:hover{ opacity:1; background:#ff3f90 }
+
+    /* Assembly overlay pieces */
+    .pieces{
+      position:absolute;
+      /* match iframe inset so pieces fly into the same framed area */
+      inset: clamp(12px, 2vw, 24px);
+      display:grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: clamp(4px, .6vw, 8px);
+      z-index:6;            /* on top of iframe while animating */
+      pointer-events:none;
+    }
+    .piece{
+      background: linear-gradient(135deg, #fff0f7, #ffe4f1);
+      border-radius: 14px;
+      box-shadow: 0 10px 28px -12px rgba(255,79,154,.35);
+      opacity:0;
+      transform: translate(var(--tx,0), var(--ty,0)) scale(.9);
+      animation: pieceIn .9s cubic-bezier(.2,.8,.2,1) forwards;
+      filter: saturate(105%);
+    }
+    @keyframes pieceIn{
+      0%   { opacity:0; transform: translate(var(--tx), var(--ty)) scale(.9) }
+      60%  { opacity:1; }
+      100% { opacity:0; transform: translate(0,0) scale(1) }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .bg-sheen, .b1, .b2, .petal, .sparkle, .shine, .piece { animation: none !important }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background decor -->
+  <div class="bg-sheen" aria-hidden="true"></div>
+  <div class="blob b1" aria-hidden="true"></div>
+  <div class="blob b2" aria-hidden="true"></div>
+
+  <!-- Particles (login only) -->
+  <div class="petal" style="left:6%; animation-delay:.0s;"></div>
+  <div class="petal" style="left:22%; animation-delay:1.2s;"></div>
+  <div class="petal" style="left:38%; animation-delay:2.4s;"></div>
+  <div class="petal" style="left:56%; animation-delay:.8s;"></div>
+  <div class="petal" style="left:74%; animation-delay:1.6s;"></div>
+  <div class="petal" style="left:90%; animation-delay:.4s;"></div>
+  <div class="sparkle" style="left:14%; top:22%; animation-delay:0s"></div>
+  <div class="sparkle" style="left:44%; top:12%; animation-delay:.7s"></div>
+  <div class="sparkle" style="left:72%; top:26%; animation-delay:1.4s"></div>
+
+  <!-- LOGIN VIEW -->
+  <main class="wrap" id="loginView" aria-labelledby="title">
+    <section class="card" role="dialog" aria-modal="true" aria-describedby="desc">
+      <div class="shine" aria-hidden="true"></div>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1 id="title">Welcome to the Garden</h1>
+          <p class="sub" id="desc">Enter the secret to bloom the page 🌸</p>
+        </div>
+      </div>
+
+      <form id="loginForm" autocomplete="off">
+        <div class="field">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 8V7a5 5 0 10-10 0v1H5a1 1 0 00-1 1v10a1 1 0 001 1h14a1 1 0 001-1V9a1 1 0 00-1-1h-2zm-8 0V7a3 3 0 116 0v1H9z"/></svg>
+          <label for="password">Password</label>
+          <input id="password" name="password" placeholder="Enter password" type="password" required />
+        </div>
+        <button class="btn" type="submit">Unlock</button>
+        <p class="hint">Hint: <strong>ALOK123</strong></p>
+        <div id="msgError" class="error">Wrong password 🌧️ Try again.</div>
+      </form>
+    </section>
+  </main>
+
+  <!-- UNLOCKED CONTENT -->
+  <section id="content" aria-live="polite">
+    <div class="frame">
+      <!-- Assembly overlay gets injected here -->
+      <div class="pieces" id="pieces" hidden></div>
+
+      <!-- Your page fullscreen inside a framed area -->
+      <iframe src="afterpass.html" allow="fullscreen" referrerpolicy="no-referrer"></iframe>
+    </div>
+  </section>
+
+  <button class="back" id="backBtn" onclick="logout()">Back</button>
+
+  <script>
+    (function(){
+      const PASS = "ALOK123";
+      const FORM = document.getElementById('loginForm');
+      const PWD  = document.getElementById('password');
+      const ERR  = document.getElementById('msgError');
+      const content = document.getElementById('content');
+      const backBtn = document.getElementById('backBtn');
+      const loginView = document.getElementById('loginView');
+      const pieces = document.getElementById('pieces');
+
+      setTimeout(()=>PWD.focus(), 80);
+
+      FORM.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        ERR.style.display = 'none';
+        if((PWD.value||'').trim() === PASS){
+          document.body.classList.add('unlocked');
+          loginView.style.display = 'none';
+          content.classList.add('show');
+          backBtn.style.display = 'inline-flex';
+          runAssembly();  // ← play the “coming from every direction” animation
+        } else {
+          ERR.style.display = 'block';
+        }
+      });
+
+      PWD.addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter'){ FORM.requestSubmit(); } });
+
+      window.logout = function(){
+        content.classList.remove('show');
+        document.body.classList.remove('unlocked');
+        loginView.style.display = '';
+        backBtn.style.display = 'none';
+        PWD.value = '';
+        clearPieces();
+        setTimeout(()=>PWD.focus(), 60);
+      };
+
+      // Create animated pieces that fly in from all directions, then fade away
+      function runAssembly(){
+        clearPieces();
+        pieces.hidden = false;
+
+        const cols = 6;            // change to 8 for more pieces
+        const rows = 4;            // change to 5 for more rows
+        const total = cols * rows;
+        pieces.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        pieces.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+        let maxDelay = 0;
+
+        for(let r=0; r<rows; r++){
+          for(let c=0; c<cols; c++){
+            const div = document.createElement('div');
+            div.className = 'piece';
+
+            // Direction: corners from diagonals, edges from sides, center small nudge
+            const fromTop = r === 0, fromBottom = r === rows-1;
+            const fromLeft = c === 0, fromRight = c === cols-1;
+
+            let tx = 0, ty = 0;
+            if(fromTop) ty = -120;        // fly in from top
+            if(fromBottom) ty = 120;      // from bottom
+            if(fromLeft) tx = -120;       // from left
+            if(fromRight) tx = 120;       // from right
+
+            if(!fromTop && !fromBottom && !fromLeft && !fromRight){
+              // inner cells: alternate diagonal directions
+              tx = (c % 2 === 0) ? -80 : 80;
+              ty = (r % 2 === 0) ? -80 : 80;
+            }
+
+            // Stagger timing: wave from edges toward center
+            const centerR = (rows-1)/2, centerC = (cols-1)/2;
+            const dist = Math.hypot(r - centerR, c - centerC);
+            const delay = (dist * 0.08) + (Math.random()*0.04);
+            maxDelay = Math.max(maxDelay, delay);
+
+            div.style.setProperty('--tx', tx+'%');
+            div.style.setProperty('--ty', ty+'%');
+            div.style.animationDelay = delay.toFixed(2) + 's';
+
+            pieces.appendChild(div);
+          }
+        }
+
+        // Remove overlay after animation completes
+        const totalTime = maxDelay + 0.95; // delay + keyframe duration
+        setTimeout(()=>{ pieces.hidden = true; clearPieces(); }, totalTime*1000 + 100);
+      }
+
+      function clearPieces(){
+        while(pieces.firstChild) pieces.removeChild(pieces.firstChild);
+      }
+
+      // Optional: add a few extra petals over time until unlock
+      let spawned = 0;
+      const maxExtra = 12;
+      const spawn = () => {
+        if(document.body.classList.contains('unlocked')) return;
+        if(spawned >= maxExtra) return;
+        const p = document.createElement('div');
+        p.className = 'petal';
+        p.style.left = (5 + Math.random()*90) + '%';
+        p.style.animationDelay = (Math.random()*2.4).toFixed(2) + 's';
+        document.body.appendChild(p);
+        spawned++;
+        setTimeout(()=>{ if(p && p.parentNode){ p.parentNode.removeChild(p); spawned--; } }, 13000);
+      };
+      setInterval(spawn, 1400);
+    })();
+  </script>
+</body>
+</html>

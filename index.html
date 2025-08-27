@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>hii, Tashu here</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{ --pink:#ff4f9e; --pink2:#ff9bc9; --white:#fff; }
+    *{ box-sizing:border-box }
+    html,body{ height:100% }
+    body{ margin:0; font-family:Poppins,system-ui,Arial,sans-serif; background:#fff; color:#fff; overflow-x:hidden; }
+
+    /* --- ONLY THIS PART SCROLLS --- */
+    .video-track{
+      position: relative;
+      height: 300vh;               /* how long your scroll feels – adjust as you like */
+      background:#fff;             /* page color under the video */
+    }
+    .bg-video{
+      position: sticky;            /* pins video while we scroll through the tall track */
+      top: 0;
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+      filter: brightness(1.07) contrast(1.08) saturate(1.15);
+      display:block;
+    }
+
+    /* --- EVERYTHING BELOW STAYS CONSTANT (FIXED) --- */
+    .overlay{
+      position: fixed; inset: 0; pointer-events:none;
+      background:
+        radial-gradient(60% 40% at 70% 10%, rgba(255,255,255,.04), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.18));
+      backdrop-filter: blur(1px);
+      z-index: 1;
+    }
+    .sparkles{
+      position: fixed; inset: 0; pointer-events:none; z-index: 2;
+      background:
+        radial-gradient(4px 4px at 20% 30%, rgba(255,255,255,.5) 0, transparent 60%),
+        radial-gradient(3px 3px at 70% 20%, rgba(255,155,201,.55) 0, transparent 60%),
+        radial-gradient(3px 3px at 40% 70%, rgba(255,255,255,.45) 0, transparent 60%),
+        radial-gradient(2.5px 2.5px at 85% 65%, rgba(255,79,158,.45) 0, transparent 60%),
+        radial-gradient(2.5px 2.5px at 15% 80%, rgba(255,255,255,.45) 0, transparent 60%);
+      animation: twinkle 6s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 6px rgba(255,255,255,.3));
+    }
+    @keyframes twinkle{0%{opacity:.45;transform:scale(1)}100%{opacity:.85;transform:scale(1.04)}}
+
+    .content{
+      position: fixed; inset: 0; z-index: 3;     /* always on top, never moves */
+      display: grid; place-items: center; padding: 20px; text-align: center;
+    }
+    .title{
+      margin:0; line-height:1; font-weight:900; letter-spacing:2px; text-transform:uppercase;
+      font-size:clamp(40px,10vw,120px);
+      background:linear-gradient(90deg,var(--pink),var(--pink2),var(--pink));
+      background-size:200% auto;
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+      animation: shine 5s linear infinite;
+      text-shadow:0 6px 24px rgba(255,79,158,.55);
+    }
+    @keyframes shine{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+    .accent{
+      margin:14px auto 0; width:min(520px,80vw); height:10px; border-radius:999px;
+      background:linear-gradient(90deg, rgba(255,79,158,.9), rgba(255,155,201,.7), rgba(255,79,158,.9));
+      filter:blur(8px); opacity:.75; box-shadow:0 0 40px rgba(255,79,158,.55);
+    }
+    .chips{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:20px; }
+    .chips a{ text-decoration:none; }
+    .chip{
+      display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border-radius:999px;
+      font-weight:700; font-size:14px; letter-spacing:.5px; color:#fff;
+      background:linear-gradient(90deg,var(--pink),var(--pink2));
+      box-shadow:0 4px 14px rgba(255,79,158,.3); border:none; cursor:pointer;
+      transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .chip:hover{ transform:translateY(-3px); box-shadow:0 8px 22px rgba(255,79,158,.4); }
+    .chip:active{ transform:scale(.95); }
+  </style>
+</head>
+  <audio id="bg-music" autoplay loop>
+    <source src="gallery/tashu1.mp4" type="audio/mpeg">
+   
+  </audio>
+<body>
+  <!-- SCROLL LAYER: only this scrolls -->
+  <div class="video-track">
+    <video class="bg-video" autoplay muted loop playsinline>
+      <source src="tashu1.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- CONSTANT LAYERS -->
+  <div class="overlay"></div>
+  <div class="sparkles" aria-hidden="true"></div>
+
+  <div class="content" role="region" aria-label="Intro">
+    <div>
+      <h1 class="title">hii, Tashu here</h1>
+      <div class="accent" aria-hidden="true"></div>
+      <div class="chips" aria-label="links">
+        <a href="pass.html"><span class="chip">💖 Photos</span></a>
+        <a href="contact.html"><span class="chip">📩 Contact</span></a>
+        <a href="login.html"><span class="chip">📲LOGIN🌺</span></a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

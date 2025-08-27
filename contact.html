@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Contact Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ff6fa9;
+            --pink-light: #ffd3e7;
+            --white: #ffffff;
+            --shadow: 0 8px 20px rgba(255, 111, 169, .2);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(180deg, var(--white), var(--pink-light));
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .form-container {
+            background: var(--white);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 16px;
+            font-weight: 800;
+            color: var(--pink);
+        }
+
+        label {
+            display: block;
+            margin: 12px 0 6px;
+            font-weight: 600;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--pink);
+            box-shadow: 0 0 0 3px var(--pink-light);
+        }
+
+        button {
+            margin-top: 16px;
+            width: 100%;
+            background: var(--pink);
+            color: var(--white);
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: var(--radius);
+            padding: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #ff4f9e;
+        }
+
+        .status {
+            margin-top: 14px;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h1>Contact Me</h1>
+        <form id="contactForm" method="POST" target="hidden_iframe"
+            action="https://docs.google.com/forms/d/e/1FAIpQLScjjOXpqyNTctAHyoYrGjCDy8G1tFQwN_Jhzl6dnHlcrjhB6w/viewform">
+
+            <label for="name">Name</label>
+            <input type="text" id="name" name="entry.2005620554" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="entry.1045781291" required>
+
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="entry.1065046570">
+
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="entry.YOUR_SUBJECT_ID">
+
+            <label for="message">Message</label>
+            <textarea id="message" rows="5" name="entry.YOUR_MESSAGE_ID" required></textarea>
+
+            <button type="submit">Send</button>
+        </form>
+
+        <div class="status" id="status"></div>
+    </div>
+
+    <!-- Hidden iframe to stop Google Form redirect -->
+    <iframe name="hidden_iframe" style="display:none;"></iframe>
+
+    <script>
+        const form = document.getElementById('contactForm');
+        const statusEl = document.getElementById('status');
+
+        form.addEventListener('submit', function (e) {
+            statusEl.textContent = "Sending...";
+            setTimeout(() => {
+                statusEl.textContent = "✅ Thank you! Your message was sent.";
+                form.reset();
+            }, 1500); // Fake delay to simulate response
+        });
+    </script>
+</body>
+
+</html>
