@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pink Chat — Tashu Special</title>
+  <style>
+    :root {
+      --pink-50: #fff7fb;
+      --pink-100: #ffe5f2;
+      --pink-500: #ff6aa9;
+      --rose-600: #e11d48;
+      --ink-900: #251823;
+      --ink-700: #493245;
+      --white: #ffffff;
+      --shadow-1: 0 10px 25px rgba(212, 121, 167, 0.25);
+      --shadow-2: 0 20px 50px rgba(212, 121, 167, 0.35);
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, var(--white), var(--pink-50));
+    }
+
+    .container {
+      width: min(1120px, 92vw);
+      margin: 0 auto;
+    }
+
+    /* Navbar */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, .85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255, 179, 214, .5);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+    }
+
+    .spacer {
+      flex: 1;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-weight: 600;
+      background: var(--white);
+      box-shadow: var(--shadow-1);
+      text-decoration: none;
+      color: inherit;
+      transition: .25s;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: var(--shadow-2);
+    }
+
+    .btn.back {
+      border-radius: 999px 18px 18px 999px;
+    }
+
+    /* Big Chat Button */
+    .btn.chat {
+      font-size: 22px;
+      padding: 18px 28px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--pink-500), var(--rose-600));
+      color: white;
+      border: none;
+      box-shadow: 0 28px 60px rgba(236, 72, 153, .55);
+      animation: pulse 2.6s infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn.chat .shine {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(500px 140px at -10% 50%, rgba(255, 255, 255, .6), transparent 40%),
+        radial-gradient(500px 140px at 110% 50%, rgba(255, 255, 255, .5), transparent 40%);
+      mix-blend-mode: soft-light;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 28px 60px rgba(236, 72, 153, .55),
+          0 0 0 0 rgba(236, 72, 153, .35);
+      }
+
+      70% {
+        box-shadow: 0 28px 60px rgba(236, 72, 153, .45),
+          0 0 0 18px rgba(236, 72, 153, 0);
+      }
+
+      100% {
+        box-shadow: 0 28px 60px rgba(236, 72, 153, .55),
+          0 0 0 0 rgba(236, 72, 153, .35);
+      }
+    }
+
+    /* Tashu Special Button */
+    .btn.special {
+      background: linear-gradient(135deg, #ff80c0, #ff4da6, #ff80d4);
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 6px 22px rgba(255, 0, 128, .65);
+      border-radius: 20px;
+      animation: glow 2.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from {
+        box-shadow: 0 6px 18px rgba(255, 0, 128, .45);
+      }
+
+      to {
+        box-shadow: 0 6px 28px rgba(255, 0, 128, .85);
+      }
+    }
+
+    /* Headline */
+    .headline {
+      font-size: clamp(28px, 6vw, 56px);
+      font-weight: 900;
+      text-align: center;
+      margin: 40px 0;
+      background: linear-gradient(180deg, var(--ink-900), var(--ink-700));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Chat */
+    .messages {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .msg {
+      padding: 12px 14px;
+      border-radius: 16px;
+      margin: 4px 0;
+      max-width: 70%;
+      animation: pop .35s ease;
+      white-space: pre-line;
+    }
+
+    .msg.you {
+      background: var(--pink-500);
+      color: white;
+      align-self: flex-end;
+      border-top-right-radius: 4px;
+    }
+
+    .msg.other {
+      background: var(--pink-100);
+      align-self: flex-start;
+      border-top-left-radius: 4px;
+    }
+
+    @keyframes pop {
+      from {
+        transform: translateY(8px) scale(.98);
+        opacity: 0;
+      }
+
+      to {
+        transform: none;
+        opacity: 1;
+      }
+    }
+
+    /* Special Overlay */
+    #specialOverlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 192, 203, 0.25);
+      backdrop-filter: blur(8px) saturate(120%);
+      z-index: 100;
+    }
+
+    .special-modal {
+      width: min(720px, 92vw);
+      border-radius: 24px;
+      padding: 24px;
+      background: linear-gradient(135deg, #ffffffcc, #ffe5f2cc);
+      border: 1px solid rgba(0, 0, 0, .06);
+      box-shadow: 0 30px 80px rgba(236, 72, 153, .35);
+      transform: scale(.96);
+      opacity: 0;
+      animation: modalIn .45s cubic-bezier(.2, .7, .2, 1) forwards;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes modalIn {
+      to {
+        transform: none;
+        opacity: 1;
+      }
+    }
+
+    .special-title {
+      font-weight: 900;
+      font-size: 24px;
+      margin: 0 0 10px;
+      letter-spacing: .5px;
+      background: linear-gradient(90deg, #ff6aa9, #e11d48);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .special-text {
+      font-size: 16px;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    .close-x {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      border: none;
+      background: rgba(0, 0, 0, .04);
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+
+    /* Petal animation */
+    .petal {
+      position: fixed;
+      pointer-events: none;
+      will-change: transform, opacity;
+      filter: drop-shadow(0 6px 8px rgba(236, 72, 153, .25));
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <button class="btn back" onclick="history.back()">← Back</button>
+      <div class="spacer"></div>
+      <a id="photosBtn" class="btn" href="pass.html">📷 Photos</a>
+      <a id="specialBtn" class="btn special" href="#">🌸 Tashu's Special</a>
+      <a id="contactBtn" class="btn" href="contact.html">✉️ Contact</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="container" style="text-align:center; padding:60px 0;">
+    <h1 class="headline">CHAT ONLINE WITH ALOK✨</h1>
+    <a href="#chat" class="btn chat"><span class="shine"></span>💬 Start Chat Online</a>
+  </header>
+
+  <!-- Chat -->
+  <section id="chat" class="container" style="padding:40px 0;">
+    <div class="card" id="chatCard"
+      style="padding:20px; border-radius:20px; background:rgba(255,255,255,.75); border:1px solid rgba(0,0,0,.06);">
+      <div class="messages" id="messages">
+        <div class="msg other">say hi 👋</div>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:12px;">
+        <input id="chatInput" placeholder="Type a message..."
+          style="flex:1; padding:12px; border-radius:14px; border:1px solid #eee;" />
+        <button id="sendBtn" class="btn">Send</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="container" style="padding:40px; text-align:center;">Made with 💗</footer>
+
+  <!-- Special Overlay -->
+  <div id="specialOverlay">
+    <div class="special-modal">
+      <button class="close-x" id="closeSpecial" aria-label="Close">✕</button>
+      <h3 class="special-title">A little surprise for you 💝</h3>
+      <pre id="specialText" class="special-text"></pre>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+    document.addEventListener('DOMContentLoaded', function () {
+      const messages = document.getElementById('messages');
+      const input = document.getElementById('chatInput');
+      const sendBtn = document.getElementById('sendBtn');
+
+      function appendMsg(text, who) {
+        const d = document.createElement('div');
+        d.className = 'msg ' + (who === 'you' ? 'you' : 'other');
+        d.textContent = text;
+        messages.appendChild(d);
+        messages.scrollTop = messages.scrollHeight;
+      }
+
+      function compliment() {
+        const lines = [
+          'You make everything feel more magical ✨',
+          'Your smile could light up a galaxy 💖',
+          'You are sunshine with a dash of stardust 🌸',
+          'Every word from you feels like a poem 💌',
+          'Your presence turns moments into sweet memories 🍬',
+          'You glow like dawn after a long night 🌷',
+          'Soft heart. Strong spirit. Unstoppable charm 💕',
+          'The world feels prettier when you’re here 🌈'
+        ];
+        return lines[Math.floor(Math.random() * lines.length)];
+      }
+
+      function replyFor(raw) {
+        const normalized = raw.toLowerCase().trim();
+        if (normalized === 'hi' || normalized === 'hii') {
+          return 'Hi Tashu, Alok here 🌸\nYou are so beautiful, like a sunshine that makes everything brighter.\nI made this little website just for you, with lots of love.\nYou are special to me, more than words can say.';
+        }
+        return compliment();
+      }
+
+      function send() {
+        const text = input.value.trim();
+        if (!text) return;
+        appendMsg(text, 'you');
+        input.value = '';
+        setTimeout(() => appendMsg(replyFor(text), 'other'), 500);
+      }
+
+      sendBtn.addEventListener('click', send);
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+
+      // SPECIAL BUTTON -> Overlay with typewriter + petals
+      const specialBtn = document.getElementById('specialBtn');
+      const overlay = document.getElementById('specialOverlay');
+      const specialTextEl = document.getElementById('specialText');
+      const closeSpecial = document.getElementById('closeSpecial');
+
+      const specialMessage = "WAIT TASHU, something special is coming for you… stay tuned! 🌹\nYou are more beautiful than the stars in the night sky,\nsweeter than the sweetest melody,\nand brighter than the morning sun.";
+
+      function openSpecial() {
+        overlay.style.display = 'flex';
+        typeText(specialTextEl, specialMessage, 22);
+        petalsRain(32);
+      }
+      function closeOverlay() { overlay.style.display = 'none'; specialTextEl.textContent = ''; }
+
+      specialBtn.addEventListener('click', (e) => { e.preventDefault(); openSpecial(); });
+      closeSpecial.addEventListener('click', closeOverlay);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
+
+      // Typewriter effect
+      function typeText(el, text, speed) {
+        el.textContent = '';
+        let i = 0;
+        const tick = () => {
+          el.textContent += text.charAt(i);
+          i++;
+          if (i < text.length) { setTimeout(tick, text.charAt(i - 1) === '\n' ? speed * 2 : speed); }
+          else { pulseModal(); }
+        };
+        tick();
+      }
+
+      function pulseModal() {
+        const modal = document.querySelector('.special-modal');
+        modal.animate([
+          { transform: 'scale(1)', boxShadow: '0 30px 80px rgba(236,72,153,.35)' },
+          { transform: 'scale(1.02)', boxShadow: '0 40px 100px rgba(236,72,153,.45)' },
+          { transform: 'scale(1)', boxShadow: '0 30px 80px rgba(236,72,153,.35)' }
+        ], { duration: 900, easing: 'ease-in-out' });
+      }
+
+      // Petals animation
+      function petalsRain(count) {
+        for (let i = 0; i < count; i++) {
+          const s = document.createElement('span');
+          s.className = 'petal';
+          s.textContent = Math.random() < 0.5 ? '🌸' : '🌹';
+          const startX = Math.random() * window.innerWidth;
+          const endX = startX + (Math.random() * 200 - 100);
+          const startY = -20;
+          const endY = window.innerHeight + 40;
+          const rot = Math.random() * 360;
+          s.style.left = startX + 'px';
+          s.style.top = startY + 'px';
+          document.body.appendChild(s);
+          const time = 3000 + Math.random() * 2000;
+          s.animate([
+            { transform: `translate(0,0) rotate(0deg)`, opacity: 0.9 },
+            { transform: `translate(${endX - startX}px, ${(endY - startY)}px) rotate(${rot}deg)`, opacity: 0 }
+          ], { duration: time, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'forwards' }).onfinish = () => s.remove();
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
