@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title></title>
+  <title>Login — Tashu Special</title>
   <style>
     :root{
       --pink-1:#ff4f9a; /* primary */
@@ -85,26 +85,6 @@
     /* Shake animation on invalid */
     @keyframes shake{ 10%, 90% {transform: translateX(-1px);} 20%, 80% {transform: translateX(2px);} 30%, 50%, 70% {transform: translateX(-4px);} 40%, 60% {transform: translateX(4px);} }
     .invalid{ animation: shake .45s ease both; }
-
-    /* "New page" (revealed only after correct login) */
-    .app{ display:none; min-height:100dvh; }
-    .app.show{ display:grid; place-items:center; padding:40px; animation: fadeIn .6s ease both; }
-    @keyframes fadeIn{ from{opacity:0; transform: translateY(8px)} to{opacity:1; transform: translateY(0)} }
-
-    .dash{
-      width:min(1020px, 94vw);
-      background:white; border-radius:28px; padding:28px; box-shadow: var(--shadow);
-      background-image: radial-gradient(800px 400px at 100% -20%, #ffe6f3 0, transparent 60%), radial-gradient(700px 420px at -10% 110%, #ffd1e6 0, transparent 60%);
-    }
-    .dash h2{ margin:0 0 6px; font-size: clamp(20px, 3.2vw, 28px) }
-    .dash p{ margin:0; color:var(--muted) }
-    .pill{ display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px; background: #fff0f6; border:1px solid #ffd1e6; font-weight:600; margin-top:14px }
-
-    /* Responsive tweaks */
-    @media (max-width:420px){
-      .card{ padding:22px }
-      input{ padding-left:42px }
-    }
   </style>
 </head>
 <body>
@@ -120,41 +100,30 @@
         <div class="logo"></div>
         <div>
           <h1 id="title">HI IM TASHU , ENTER YOUR ID PASSWORD</h1>
-          <p class="sub" id="desc">Please login to continue. 💗)</p>
+          <p class="sub" id="desc">Please login to continue 💗</p>
         </div>
       </div>
 
       <form id="loginForm" autocomplete="off">
         <div class="field">
-          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1a1 1 0 001 1h14a1 1 0 001-1v-1c0-2.761-3.582-5-8-5z"/></svg>
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1a1 1 0 001 1h14a1 1 0 001-1v-1c0-2.761-3.582-5-8-5z"/></svg>
           <label for="username">Username</label>
-          <input id="username" name="username" placeholder="Enter username" inputmode="text" required />
+          <input id="username" name="username" placeholder="Enter username" required />
         </div>
         <div class="field">
-          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 8V7a5 5 0 10-10 0v1H5a1 1 0 00-1 1v10a1 1 0 001 1h14a1 1 0 001-1V9a1 1 0 00-1-1h-2zm-8 0V7a3 3 0 116 0v1H9z"/></svg>
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17 8V7a5 5 0 10-10 0v1H5a1 1 0 00-1 1v10a1 1 0 001 1h14a1 1 0 001-1V9a1 1 0 00-1-1h-2zm-8 0V7a3 3 0 116 0v1H9z"/></svg>
           <label for="password">Password</label>
           <input id="password" name="password" placeholder="Enter password" type="password" required />
         </div>
         <button class="btn" type="submit">Log in</button>
         <div class="meta">
-          <span class="hint">👀 <strong></strong> / <strong></strong></span>
+          <span class="hint">👀 ID: <strong>tashu36</strong> / PW: <strong>ALOK123</strong></span>
         </div>
         <div id="msgError" class="error">Incorrect username or password. Try again.</div>
         <div id="msgOk" class="ok">Success! Redirecting…</div>
       </form>
     </section>
   </main>
-
-  <!-- APP VIEW (revealed only after correct login) -->
-  <section class="app" id="appView" aria-live="polite">
-    <div class="dash">
-      <h2>Welcome, <span id="who">User</span> ✨</h2>
-      <p>You’ve unlocked the page. This section only appears after a correct login.</p>
-      <div class="pill">Pink & White • Animated • Responsive</div>
-      <p style="margin-top:18px">You can replace this content with your actual dashboard or redirect to an external page in the script below.</p>
-      <button class="btn" style="width:auto; margin-top:14px" onclick="logout()">Log out</button>
-    </div>
-  </section>
 
   <script>
     (function(){
@@ -163,9 +132,6 @@
       const P = document.getElementById('password');
       const ERR = document.getElementById('msgError');
       const OK  = document.getElementById('msgOk');
-      const loginView = document.getElementById('loginView');
-      const appView   = document.getElementById('appView');
-      const who = document.getElementById('who');
 
       const VALID_USER = 'tashu36';
       const VALID_PASS = 'ALOK123';
@@ -184,13 +150,8 @@
 
         if(user === VALID_USER && pass === VALID_PASS){
           OK.style.display = 'block';
-          who.textContent = user;
-          // Simulate redirect by swapping views after a short delay
           setTimeout(()=>{
-            loginView.style.display = 'none';
-            appView.classList.add('show');
-            // If you prefer a hard redirect, uncomment:
-            // window.location.href = 'dashboard.html';
+            window.location.href = "aflogin.html"; // ✅ redirect to your page
           }, 600);
         } else {
           ERR.style.display = 'block';
@@ -205,22 +166,11 @@
         }
       });
 
-      // Prevent pasting password typo with trailing spaces
+      // Prevent trailing spaces
       ['change','blur'].forEach(evt=>{
         P.addEventListener(evt, ()=>{ P.value = (P.value||'').trim(); });
         U.addEventListener(evt, ()=>{ U.value = (U.value||'').trim(); });
       });
-
-      // Expose logout for the button
-      window.logout = function(){
-        U.value = '';
-        P.value = '';
-        appView.classList.remove('show');
-        loginView.style.display = '';
-        ERR.style.display = 'none';
-        OK.style.display = 'none';
-        setTimeout(()=>U.focus(), 50);
-      }
     })();
   </script>
 </body>
