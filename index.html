@@ -9,32 +9,45 @@
     :root{ --pink:#ff4f9e; --pink2:#ff9bc9; --white:#fff; }
     *{ box-sizing:border-box }
     html,body{ height:100% }
-    body{ margin:0; font-family:Poppins,system-ui,Arial,sans-serif; background:#fff; color:#fff; overflow-x:hidden; }
+    body{
+      margin:0; font-family:Poppins,system-ui,Arial,sans-serif;
+      background:#fff; color:#fff; overflow-x:hidden;
+      /* safe-area support for iPhone notch */
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
 
-    /* --- ONLY THIS PART SCROLLS --- */
+    /* --- ONLY THIS PART SCROLLS (content track) --- */
     .video-track{
       position: relative;
-      height: 300vh;               /* how long your scroll feels – adjust as you like */
-      background:#fff;             /* page color under the video */
-    }
-    .bg-video{
-      position: sticky;            /* pins video while we scroll through the tall track */
-      top: 0;
-      width: 100%;
-      height: 100vh;
-      object-fit: cover;
-      filter: brightness(1.07) contrast(1.08) saturate(1.15);
-      display:block;
+      height: 300vh;            /* adjust to taste */
+      background:#fff;
     }
 
-    /* --- EVERYTHING BELOW STAYS CONSTANT (FIXED) --- */
+    /* --- BACKGROUND LAYER: full-bleed on all iPhones --- */
+    .bg-wrap{
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:#000;
+    }
+    .bg-video, .bg-image{
+      position: absolute; inset: 0;
+      width: 100vw;
+      height: 100dvh;          /* dynamic viewport height (iOS 16+) */
+      object-fit: cover;       /* fill entire screen without distortion */
+      display:block;
+    }
+    /* Older Safari toolbars: use small/large viewport fallbacks */
+    @supports (-webkit-touch-callout: none) {
+      .bg-video, .bg-image { height: 100svh; }
+    }
+
+    /* --- CONSTANT EFFECT LAYERS --- */
     .overlay{
-      position: fixed; inset: 0; pointer-events:none;
+      position: fixed; inset: 0; pointer-events:none; z-index: 1;
       background:
         radial-gradient(60% 40% at 70% 10%, rgba(255,255,255,.04), transparent 60%),
         linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.18));
       backdrop-filter: blur(1px);
-      z-index: 1;
     }
     .sparkles{
       position: fixed; inset: 0; pointer-events:none; z-index: 2;
@@ -46,12 +59,15 @@
         radial-gradient(2.5px 2.5px at 15% 80%, rgba(255,255,255,.45) 0, transparent 60%);
       animation: twinkle 6s ease-in-out infinite alternate;
       filter: drop-shadow(0 0 6px rgba(255,255,255,.3));
+      z-index: 2;
     }
     @keyframes twinkle{0%{opacity:.45;transform:scale(1)}100%{opacity:.85;transform:scale(1.04)}}
 
     .content{
-      position: fixed; inset: 0; z-index: 3;     /* always on top, never moves */
-      display: grid; place-items: center; padding: 20px; text-align: center;
+      position: fixed; inset: 0; z-index: 3;     /* always on top */
+      display: grid; place-items: center;
+      padding: calc(16px + env(safe-area-inset-top)) 20px calc(16px + env(safe-area-inset-bottom));
+      text-align: center;
     }
     .title{
       margin:0; line-height:1; font-weight:900; letter-spacing:2px; text-transform:uppercase;
@@ -81,17 +97,25 @@
     .chip:active{ transform:scale(.95); }
   </style>
 </head>
-  <audio id="bg-music" autoplay loop>
-    <source src="gallery/tashu1.mp4" type="audio/mpeg">
-   
-  </audio>
+
+<!-- ⚠️ iOS Safari won't autoplay audio with sound -->
+<audio id="bg-music" muted loop playsinline>
+  <!-- If it's actually an MP4 audio, use audio/mp4; for MP3 use audio/mpeg -->
+  <source src="gallery/tashu1.mp4" type="audio/mp4">
+</audio>
+
 <body>
-  <!-- SCROLL LAYER: only this scrolls -->
-  <div class="video-track">
-    <video class="bg-video" autoplay muted loop playsinline>
-      <source src="gallery/tashu1.mp4" type="video/mp4">
+  <!-- BACKGROUND: fixed full-bleed -->
+  <div class="bg-wrap" aria-hidden="true">
+    <video class="bg-video" autoplay muted loop playsinline preload="auto" poster="tashu1.jpg">
+      <source src="tashu1.mp4" type="video/mp4">
+      <!-- Fallback image if video can't play -->
+      <img class="bg-image" src="tashu1.jpg" alt="" />
     </video>
   </div>
+
+  <!-- SCROLL TRACK (keeps your long scroll effect if you want it) -->
+  <div class="video-track"></div>
 
   <!-- CONSTANT LAYERS -->
   <div class="overlay"></div>
@@ -104,9 +128,18 @@
       <div class="chips" aria-label="links">
         <a href="pass.html"><span class="chip">💖 Photos</span></a>
         <a href="contact.html"><span class="chip">📩 Contact</span></a>
-        <a href="login.html"><span class="chip">📲LOGIN🌺</span></a>
+        <a href="login.html"><span class="chip">📲 LOGIN 🌺</span></a>
       </div>
     </div>
   </div>
+
+  <script>
+    // If you want background music, iOS requires a user gesture.
+    // Example: unmute after first tap anywhere:
+    // document.addEventListener('click', () => {
+    //   const a = document.getElementById('bg-music');
+    //   a.muted = false; a.play().catch(()=>{});
+    // }, { once: true });
+  </script>
 </body>
 </html>
