@@ -3,304 +3,175 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pink Chat — Tashu Special</title>
+  <title>Login — Tashu Special</title>
   <style>
     :root{
-      --pink-50:#fff7fb; --pink-100:#ffe5f2; --pink-500:#ff6aa9; --rose-600:#e11d48;
-      --ink-900:#251823; --ink-700:#493245; --white:#fff;
-      --shadow-1:0 10px 25px rgba(212,121,167,.25);
-      --shadow-2:0 20px 50px rgba(212,121,167,.35);
-      --radius:18px;
-      --pad:clamp(12px, 2.5vw, 20px);
+      --pink-1:#ff4f9a; /* primary */
+      --pink-2:#ff7bb6; /* accent */
+      --pink-3:#ffd1e6; /* soft */
+      --bg:#fff7fb;      /* page */
+      --ink:#1f1a1d;     /* text */
+      --muted:#6b5d64;   /* muted text */
+      --card:#ffffffcc;  /* glass card */
+      --ok:#00b37a;
+      --err:#e11d48;
+      --radius: 22px;
+      --shadow: 0 20px 60px -20px rgba(255,79,154,.45), 0 10px 30px -15px rgba(31,26,29,.25);
     }
-    html{ -webkit-text-size-adjust:100%; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background:linear-gradient(180deg,var(--white),var(--pink-50));
-      color:#1a1a1a;
-    }
-    .container{
-      width:min(1080px, 92vw);
-      margin:0 auto;
-      padding:clamp(10px,2vw,16px);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--ink);
+      background: radial-gradient(1200px 800px at 20% 10%, var(--pink-3), transparent),
+                  radial-gradient(900px 700px at 80% 0%, #ffe6f3, transparent),
+                  linear-gradient(180deg, var(--bg), #fff);
+      overflow-x:hidden;
     }
 
-    /* NAV */
-    .nav{
-      position:sticky; top:0; z-index:50;
-      background:rgba(255,255,255,.9);
-      backdrop-filter:blur(8px);
-      border-bottom:1px solid rgba(255,179,214,.5);
-    }
-    .nav-inner{
-      display:flex; align-items:center; gap:8px; flex-wrap:wrap;
-      padding:8px;
-    }
-    .spacer{ flex:1 }
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap:6px;
-      border-radius:14px; padding:10px 14px;
-      font-weight:600; font-size:clamp(14px, 3.6vw, 15px);
-      background:var(--white); color:#222; text-decoration:none;
-      border:1px solid rgba(0,0,0,.06); box-shadow:var(--shadow-1);
-      transition:transform .25s, box-shadow .25s;
-      min-height:40px;
-      flex:0 1 auto;
-    }
-    .btn:hover{ transform:translateY(-2px) scale(1.03); box-shadow:var(--shadow-2) }
-    .btn.back{ border-radius:999px 18px 18px 999px }
-    .btn.special{
-      background:linear-gradient(135deg,#ff80c0,#ff4da6,#ff80d4); color:#fff; font-weight:700;
-      box-shadow:0 6px 22px rgba(255,0,128,.45);
-      animation:glow 2.4s ease-in-out infinite alternate;
-    }
-    @keyframes glow{ from{box-shadow:0 6px 18px rgba(255,0,128,.35)} to{box-shadow:0 6px 28px rgba(255,0,128,.7)} }
+    /* Floating gradient blobs for subtle animation */
+    .blob{position:fixed; inset:auto; border-radius:50%; filter: blur(30px); opacity:.55; pointer-events:none; mix-blend-mode:multiply;}
+    .b1{ width:420px; height:420px; background:radial-gradient(circle at 30% 30%, #ffd1e6, var(--pink-2)); top:-120px; left:-120px; animation: float1 12s ease-in-out infinite;}
+    .b2{ width:520px; height:520px; background:radial-gradient(circle at 70% 30%, #ffe1ef, var(--pink-1)); bottom:-160px; right:-180px; animation: float2 14s ease-in-out infinite;}
+    @keyframes float1{ 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,40px)} }
+    @keyframes float2{ 0%,100%{transform:translate(0,0)} 50%{transform:translate(-40px,-30px)} }
 
-    .btn.chat{
-      font-size:clamp(16px, 4.2vw, 22px);
-      padding:12px 18px; border-radius:18px;
-      background:linear-gradient(135deg,var(--pink-500),var(--rose-600)); color:#fff; border:none;
-      box-shadow:0 18px 40px rgba(236,72,153,.45);
-      position:relative; overflow:hidden; animation:pulse 2.6s infinite;
-    }
-    .btn.chat .shine{
-      position:absolute; inset:0;
-      background:radial-gradient(500px 140px at -10% 50%, rgba(255,255,255,.5), transparent 40%),
-                 radial-gradient(500px 140px at 110% 50%, rgba(255,255,255,.4), transparent 40%);
-      mix-blend-mode:soft-light;
-    }
-    @keyframes pulse{
-      0%{ box-shadow:0 18px 40px rgba(236,72,153,.45), 0 0 0 0 rgba(236,72,153,.25) }
-      70%{ box-shadow:0 18px 32px rgba(236,72,153,.35), 0 0 0 14px rgba(236,72,153,0) }
-      100%{ box-shadow:0 18px 40px rgba(236,72,153,.45), 0 0 0 0 rgba(236,72,153,.25) }
-    }
+    .wrap{min-height:100%; display:grid; place-items:center; padding: clamp(20px, 3vw, 40px);}
 
-    /* HERO */
-    .hero{ text-align:center; padding:clamp(20px, 6vw, 40px) 0 }
-    .headline{
-      font-size:clamp(22px, 7vw, 52px); font-weight:900; margin:0 0 clamp(10px,2vw,16px);
-      background:linear-gradient(180deg,var(--ink-900),var(--ink-700));
-      -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1.15;
-    }
-
-    /* CARD */
     .card{
-      padding:var(--pad);
-      border-radius:var(--radius);
-      background:rgba(255,255,255,.8);
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow:0 10px 30px rgba(236,72,153,.12);
+      width:min(94vw, 440px);
+      background: var(--card);
+      backdrop-filter: blur(10px) saturate(1.1);
+      -webkit-backdrop-filter: blur(10px) saturate(1.1);
+      border:1px solid rgba(255,255,255,.6);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:28px;
+      position:relative;
+      overflow:hidden;
     }
+    .shine{ position:absolute; inset:0; background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.35) 40%, transparent 60%); transform:translateX(-100%); animation: shine 5s linear infinite;}
+    @keyframes shine{ 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
 
-    /* CHAT SECTION */
-    .chat-sec{ padding:clamp(12px, 3vw, 28px) 0 60px }
-    .messages{
-      display:flex; flex-direction:column; gap:8px;
-      max-height: min(60svh, 60dvh);
-      overflow:auto; scroll-behavior:smooth;
-      -webkit-overflow-scrolling:touch;
-      padding-right:2px;
-    }
-    .msg{
-      padding:12px 14px; border-radius:16px; margin:2px 0;
-      max-width:85%; white-space:pre-line; word-wrap:break-word;
-      animation:pop .25s ease;
-      font-size:clamp(14px, 3.6vw, 16px);
-    }
-    .msg.you{ background:var(--pink-500); color:#fff; align-self:flex-end; border-top-right-radius:6px }
-    .msg.other{ background:var(--pink-100); align-self:flex-start; border-top-left-radius:6px }
-    @keyframes pop{ from{ transform:translateY(6px); opacity:0 } to{ transform:none; opacity:1 } }
+    .brand{display:flex; align-items:center; gap:14px; margin-bottom:8px}
+    .logo{width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg, var(--pink-1), var(--pink-2)); box-shadow: 0 8px 24px -10px var(--pink-1);} 
+    h1{font-size: clamp(22px, 3.4vw, 28px); margin:0}
+    p.sub{margin:.25rem 0 1.25rem; color:var(--muted); font-size:.98rem}
 
-    .composer{
-      display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;
+    form{display:grid; gap:14px}
+    label{font-size:.9rem; color:var(--muted)}
+    .field{position:relative}
+    input{
+      width:100%; padding:14px 14px 14px 44px; border-radius:16px; border:1px solid #f2c9dc; background: #fff; outline:none; font-size:1rem; transition:.2s ease; box-shadow: inset 0 0 0 rgba(0,0,0,0);
     }
-    .input{
-      flex:1 1 180px; min-height:44px;
-      padding:12px; border-radius:14px; border:1px solid #eee; font-size:clamp(14px, 3.8vw, 16px);
-      background:#fff;
-    }
-    .send{ min-width:110px }
+    input:focus{border-color: var(--pink-2); box-shadow: 0 0 0 4px rgba(255,123,182,.18)}
+    .icon{ position:absolute; left:12px; top:50%; transform: translateY(-50%); width:20px; height:20px; opacity:.6 }
 
-    /* SPECIAL OVERLAY */
-    #specialOverlay{
-      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-      background:rgba(255,192,203,.25); backdrop-filter:blur(8px) saturate(120%);
-      z-index:100; padding:20px;
+    .btn{
+      appearance:none; border:0; cursor:pointer; padding:14px 18px; border-radius:16px; font-weight:700; letter-spacing:.3px; 
+      background: linear-gradient(135deg, var(--pink-1), var(--pink-2)); color:white; box-shadow: 0 12px 30px -12px rgba(255,79,154,.7);
+      transition: transform .08s ease, box-shadow .2s ease; width:100%;
     }
-    .special-modal{
-      width:100%; max-width:min(620px, 92vw);
-      border-radius:20px; padding:18px;
-      background:linear-gradient(135deg,#ffffffcc,#ffe5f2cc);
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow:0 30px 80px rgba(236,72,153,.3);
-      transform:scale(.96); opacity:0; animation:modalIn .45s cubic-bezier(.2,.7,.2,1) forwards;
-      position:relative; overflow:hidden;
-    }
-    @keyframes modalIn{ to{ transform:none; opacity:1 } }
-    .special-title{
-      font-weight:900; font-size:clamp(18px, 4.5vw, 24px); margin:0 0 8px;
-      background:linear-gradient(90deg,#ff6aa9,#e11d48);
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-    }
-    .special-text{ font-size:clamp(14px, 4vw, 16px); line-height:1.6; white-space:pre-line }
-    .close-x{
-      position:absolute; top:10px; right:12px; border:none;
-      background:rgba(0,0,0,.06); border-radius:10px; padding:6px 10px; cursor:pointer;
-    }
-    .petal{ position:fixed; pointer-events:none; filter:drop-shadow(0 6px 8px rgba(236,72,153,.25)) }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 16px 34px -12px rgba(255,79,154,.8); }
+    .btn:active{ transform: translateY(0) scale(.99); }
 
-    /* MOBILE TWEAKS */
-    @media (max-width:560px){
-      .btn{ flex:1 1 calc(50% - 6px) }
-      .btn.back{ flex:0 1 auto }
-      .card{ padding:clamp(12px, 3.6vw, 16px) }
-      .composer{ gap:6px }
-      .send{ min-width:100px }
-      .messages{ max-height:min(58svh, 58dvh) }
-    }
+    .meta{display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:.9rem}
+    .hint{color:var(--muted)}
+
+    .error{ display:none; margin-top:6px; color:var(--err); font-size:.92rem; }
+    .ok{ display:none; margin-top:6px; color:var(--ok); font-size:.92rem; }
+
+    /* Shake animation on invalid */
+    @keyframes shake{ 10%, 90% {transform: translateX(-1px);} 20%, 80% {transform: translateX(2px);} 30%, 50%, 70% {transform: translateX(-4px);} 40%, 60% {transform: translateX(4px);} }
+    .invalid{ animation: shake .45s ease both; }
   </style>
 </head>
 <body>
-  <!-- NAV -->
-  <nav class="nav">
-    <div class="container nav-inner">
-      <button class="btn back" onclick="history.back()">← Back</button>
-      <div class="spacer"></div>
-      <a id="photosBtn" class="btn" href="pass.html">📷 Photos</a>
-      <a id="specialBtn" class="btn special" href="#">🌸 Tashu's Special</a>
-      <a id="contactBtn" class="btn" href="contact.html">✉️ Contact</a>
-    </div>
-  </nav>
+  <!-- floating background blobs -->
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
 
-  <!-- HERO -->
-  <header class="container hero">
-    <h1 class="headline">CHAT ONLINE WITH ALOK ✨</h1>
-    <a href="#chat" class="btn chat"><span class="shine"></span>💬 Start Chat Online</a>
-  </header>
-
-  <!-- CHAT -->
-  <section id="chat" class="container chat-sec">
-    <div class="card" id="chatCard">
-      <div class="messages" id="messages">
-        <div class="msg other">say hi 👋</div>
+  <!-- LOGIN VIEW -->
+  <main class="wrap" id="loginView" aria-labelledby="title">
+    <section class="card" role="dialog" aria-modal="true" aria-describedby="desc">
+      <div class="shine" aria-hidden="true"></div>
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1 id="title">HI IM TASHU , ENTER YOUR ID PASSWORD</h1>
+          <p class="sub" id="desc">Please login to continue 💗</p>
+        </div>
       </div>
-      <div class="composer">
-        <input id="chatInput" class="input" placeholder="Type a message..." />
-        <button id="sendBtn" class="btn send">Send</button>
-      </div>
-    </div>
-  </section>
 
-  <footer class="container" style="padding:12px; text-align:center; font-size:13px;">Made with 💗</footer>
-
-  <!-- SPECIAL OVERLAY -->
-  <div id="specialOverlay">
-    <div class="special-modal">
-      <button class="close-x" id="closeSpecial" aria-label="Close">✕</button>
-      <h3 class="special-title">A little surprise for you 💝</h3>
-      <pre id="specialText" class="special-text"></pre>
-    </div>
-  </div>
+      <form id="loginForm" autocomplete="off">
+        <div class="field">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1a1 1 0 001 1h14a1 1 0 001-1v-1c0-2.761-3.582-5-8-5z"/></svg>
+          <label for="username">Username</label>
+          <input id="username" name="username" placeholder="Enter username" required />
+        </div>
+        <div class="field">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17 8V7a5 5 0 10-10 0v1H5a1 1 0 00-1 1v10a1 1 0 001 1h14a1 1 0 001-1V9a1 1 0 00-1-1h-2zm-8 0V7a3 3 0 116 0v1H9z"/></svg>
+          <label for="password">Password</label>
+          <input id="password" name="password" placeholder="Enter password" type="password" required />
+        </div>
+        <button class="btn" type="submit">Log in</button>
+        <div class="meta">
+          <span class="hint">👀 ID: <strong>tashu36</strong> / PW: <strong>ALOK123</strong></span>
+        </div>
+        <div id="msgError" class="error">Incorrect username or password. Try again.</div>
+        <div id="msgOk" class="ok">Success! Redirecting…</div>
+      </form>
+    </section>
+  </main>
 
   <script>
-  'use strict';
-  document.addEventListener('DOMContentLoaded', function () {
-    const messages = document.getElementById('messages');
-    const input = document.getElementById('chatInput');
-    const sendBtn = document.getElementById('sendBtn');
+    (function(){
+      const FORM = document.getElementById('loginForm');
+      const U = document.getElementById('username');
+      const P = document.getElementById('password');
+      const ERR = document.getElementById('msgError');
+      const OK  = document.getElementById('msgOk');
 
-    function appendMsg(text, who) {
-      const d = document.createElement('div');
-      d.className = 'msg ' + (who === 'you' ? 'you' : 'other');
-      d.textContent = text;
-      messages.appendChild(d);
-      messages.scrollTop = messages.scrollHeight;
-    }
+      const VALID_USER = 'tashu36';
+      const VALID_PASS = 'ALOK123';
 
-    function compliment() {
-      const lines = [
-        'You make everything feel more magical ✨',
-        'Your smile could light up a galaxy 💖',
-        'You are sunshine with a dash of stardust 🌸',
-        'Every word from you feels like a poem 💌',
-        'Your presence turns moments into sweet memories 🍬',
-        'You glow like dawn after a long night 🌷',
-        'Soft heart. Strong spirit. Unstoppable charm 💕',
-        'The world feels prettier when you’re here 🌈'
-      ];
-      return lines[Math.floor(Math.random() * lines.length)];
-    }
+      // Autofocus username on load
+      window.setTimeout(()=>U.focus(), 50);
 
-    function replyFor(raw) {
-      const normalized = raw.toLowerCase().trim();
-      if (normalized === 'hi' || normalized === 'hii') {
-        return 'Hi Tashu, Alok here 🌸\nYou are so beautiful, like a sunshine that makes everything brighter.\nI made this little website just for you, with lots of love.\nYou are special to me, more than words can say.';
-      }
-      return compliment();
-    }
+      FORM.addEventListener('submit', function(e){
+        e.preventDefault();
+        ERR.style.display = 'none';
+        OK.style.display = 'none';
+        FORM.classList.remove('invalid');
 
-    function send() {
-      const text = input.value.trim();
-      if (!text) return;
-      appendMsg(text, 'you');
-      input.value = '';
-      setTimeout(() => appendMsg(replyFor(text), 'other'), 500);
-    }
+        const user = (U.value || '').trim();
+        const pass = (P.value || '').trim();
 
-    sendBtn.addEventListener('click', send);
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+        if(user === VALID_USER && pass === VALID_PASS){
+          OK.style.display = 'block';
+          setTimeout(()=>{
+            window.location.href = "aflogin.html"; // ✅ redirect to your page
+          }, 600);
+        } else {
+          ERR.style.display = 'block';
+          FORM.classList.add('invalid');
+        }
+      });
 
-    // SPECIAL
-    const specialBtn = document.getElementById('specialBtn');
-    const overlay = document.getElementById('specialOverlay');
-    const specialTextEl = document.getElementById('specialText');
-    const closeSpecial = document.getElementById('closeSpecial');
+      // Optional: allow pressing Enter anywhere to submit
+      document.addEventListener('keydown', (ev)=>{
+        if(ev.key === 'Enter' && document.activeElement.tagName !== 'TEXTAREA'){
+          FORM.requestSubmit();
+        }
+      });
 
-    const specialMessage = "WAIT TASHU, something special is coming for you… stay tuned! 🌹\nYou are more beautiful than the stars in the night sky,\nsweeter than the sweetest melody,\nand brighter than the morning sun.";
-
-    function openSpecial() {
-      overlay.style.display = 'flex';
-      typeText(specialTextEl, specialMessage, 20);
-      petalsRain(28);
-    }
-    function closeOverlay(){ overlay.style.display='none'; specialTextEl.textContent=''; }
-
-    specialBtn.addEventListener('click', (e)=>{ e.preventDefault(); openSpecial(); });
-    closeSpecial.addEventListener('click', closeOverlay);
-    overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeOverlay(); });
-
-    function typeText(el, text, speed){
-      el.textContent=''; let i=0;
-      const tick=()=>{ el.textContent+=text.charAt(i); i++;
-        if(i<text.length){ setTimeout(tick, text.charAt(i-1)==='\n'? speed*2 : speed); } else { pulseModal(); } };
-      tick();
-    }
-    function pulseModal(){
-      const modal=document.querySelector('.special-modal');
-      modal.animate([
-        { transform:'scale(1)', boxShadow:'0 30px 80px rgba(236,72,153,.3)' },
-        { transform:'scale(1.02)', boxShadow:'0 40px 100px rgba(236,72,153,.4)' },
-        { transform:'scale(1)', boxShadow:'0 30px 80px rgba(236,72,153,.3)' }
-      ], { duration:900, easing:'ease-in-out' });
-    }
-    function petalsRain(count){
-      for(let i=0;i<count;i++){
-        const s=document.createElement('span');
-        s.className='petal';
-        s.textContent=Math.random()<0.5?'🌸':'🌹';
-        const startX=Math.random()*window.innerWidth;
-        const endX=startX+(Math.random()*200-100);
-        const startY=-20, endY=window.innerHeight+40, rot=Math.random()*360;
-        s.style.left=startX+'px'; s.style.top=startY+'px'; document.body.appendChild(s);
-        const time=2800+Math.random()*2000;
-        s.animate([
-          { transform:`translate(0,0) rotate(0deg)`, opacity:.9 },
-          { transform:`translate(${endX-startX}px, ${endY-startY}px) rotate(${rot}deg)`, opacity:0 }
-        ], { duration:time, easing:'cubic-bezier(.2,.7,.2,1)', fill:'forwards'}).onfinish=()=>s.remove();
-      }
-    }
-  });
+      // Prevent trailing spaces
+      ['change','blur'].forEach(evt=>{
+        P.addEventListener(evt, ()=>{ P.value = (P.value||'').trim(); });
+        U.addEventListener(evt, ()=>{ U.value = (U.value||'').trim(); });
+      });
+    })();
   </script>
 </body>
 </html>
