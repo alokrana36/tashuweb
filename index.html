@@ -3,110 +3,815 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <title>hii, Tashu here</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800;900&display=swap" rel="stylesheet">
+  <title> Hi, Tashu here! </title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    :root{ --pink:#ff4f9e; --pink2:#ff9bc9; --white:#fff; }
-    *{ box-sizing:border-box }
-    html,body{ height:100% }
-    body{ margin:0; font-family:Poppins,system-ui,Arial,sans-serif; background:#fff; color:#fff; overflow-x:hidden; }
+    /* ===== ROOT VARIABLES ===== */
+    :root{ 
+      --pink: #ff4f9e; 
+      --pink2: #ff9bc9; 
+      --pink3: #ffd6ec;
+      --rose: #ff8fb3;
+      --white: #fff; 
+      --glass: rgba(255,255,255,.85);
+      --shadow: 0 20px 60px -20px rgba(255,79,158,.45), 0 12px 34px -18px rgba(0,0,0,.25);
+      --radius: 22px;
+    }
 
-    /* --- ONLY THIS PART SCROLLS --- */
+    /* ===== RESET & BASE STYLES ===== */
+    *{ 
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body{ 
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    body{ 
+      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; 
+      background: #fff; 
+      color: #fff; 
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ===== SCROLL LAYER ===== */
     .video-track{
       position: relative;
-      height: 300vh;               /* how long your scroll feels – adjust as you like */
-      background:#fff;             /* page color under the video */
+      height: 300vh;
+      background: linear-gradient(180deg, #fff7fb, #ffffff);
     }
+
     .bg-video{
-      position: sticky;            /* pins video while we scroll through the tall track */
+      position: sticky;
       top: 0;
       width: 100%;
       height: 100vh;
       object-fit: cover;
-      filter: brightness(1.07) contrast(1.08) saturate(1.15);
-      display:block;
+      filter: brightness(1.05) contrast(1.1) saturate(1.2);
+      display: block;
+      z-index: 0;
     }
 
-    /* --- EVERYTHING BELOW STAYS CONSTANT (FIXED) --- */
+    /* ===== FIXED OVERLAY LAYERS ===== */
     .overlay{
-      position: fixed; inset: 0; pointer-events:none;
+      position: fixed; 
+      inset: 0; 
+      pointer-events: none;
       background:
-        radial-gradient(60% 40% at 70% 10%, rgba(255,255,255,.04), transparent 60%),
-        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.18));
-      backdrop-filter: blur(1px);
+        radial-gradient(60% 40% at 70% 10%, rgba(255,255,255,.06), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.1), rgba(0,0,0,.2));
+      backdrop-filter: blur(1.5px);
       z-index: 1;
     }
-    .sparkles{
-      position: fixed; inset: 0; pointer-events:none; z-index: 2;
-      background:
-        radial-gradient(4px 4px at 20% 30%, rgba(255,255,255,.5) 0, transparent 60%),
-        radial-gradient(3px 3px at 70% 20%, rgba(255,155,201,.55) 0, transparent 60%),
-        radial-gradient(3px 3px at 40% 70%, rgba(255,255,255,.45) 0, transparent 60%),
-        radial-gradient(2.5px 2.5px at 85% 65%, rgba(255,79,158,.45) 0, transparent 60%),
-        radial-gradient(2.5px 2.5px at 15% 80%, rgba(255,255,255,.45) 0, transparent 60%);
-      animation: twinkle 6s ease-in-out infinite alternate;
-      filter: drop-shadow(0 0 6px rgba(255,255,255,.3));
-    }
-    @keyframes twinkle{0%{opacity:.45;transform:scale(1)}100%{opacity:.85;transform:scale(1.04)}}
 
+    .sparkles{
+      position: fixed; 
+      inset: 0; 
+      pointer-events: none; 
+      z-index: 2;
+      background:
+        radial-gradient(4px 4px at 20% 30%, rgba(255,255,255,.6) 0, transparent 60%),
+        radial-gradient(3px 3px at 70% 20%, rgba(255,155,201,.65) 0, transparent 60%),
+        radial-gradient(3px 3px at 40% 70%, rgba(255,255,255,.55) 0, transparent 60%),
+        radial-gradient(2.5px 2.5px at 85% 65%, rgba(255,79,158,.55) 0, transparent 60%),
+        radial-gradient(2.5px 2.5px at 15% 80%, rgba(255,255,255,.55) 0, transparent 60%),
+        radial-gradient(3px 3px at 90% 40%, rgba(255,155,201,.5) 0, transparent 60%),
+        radial-gradient(2px 2px at 10% 60%, rgba(255,255,255,.5) 0, transparent 60%);
+      animation: twinkle 8s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 8px rgba(255,255,255,.4));
+    }
+
+    @keyframes twinkle{
+      0%{opacity:.5;transform:scale(1)}
+      100%{opacity:.9;transform:scale(1.06)}
+    }
+
+    /* ===== FLOATING ELEMENTS ===== */
+    .floating-elements {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .floating-element {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(25px);
+      mix-blend-mode: multiply;
+      opacity: 0.4;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .float-1 {
+      width: 300px;
+      height: 300px;
+      left: -50px;
+      top: -50px;
+      background: radial-gradient(circle at 30% 30%, #ffd1e6, var(--pink2));
+      animation-delay: 0s;
+    }
+
+    .float-2 {
+      width: 400px;
+      height: 400px;
+      right: -100px;
+      bottom: -100px;
+      background: radial-gradient(circle at 70% 30%, #ffe6f3, var(--pink));
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(20px, 30px) rotate(90deg); }
+      50% { transform: translate(-15px, 20px) rotate(180deg); }
+      75% { transform: translate(25px, -10px) rotate(270deg); }
+    }
+
+    /* ===== MAIN CONTENT ===== */
     .content{
-      position: fixed; inset: 0; z-index: 3;     /* always on top, never moves */
-      display: grid; place-items: center; padding: 20px; text-align: center;
+      position: fixed; 
+      inset: 0; 
+      z-index: 3;
+      display: grid; 
+      place-items: center; 
+      padding: clamp(20px, 4vw, 40px); 
+      text-align: center;
     }
+
+    .content-inner {
+      max-width: 90vw;
+      width: 100%;
+    }
+
     .title{
-      margin:0; line-height:1; font-weight:900; letter-spacing:2px; text-transform:uppercase;
-      font-size:clamp(40px,10vw,120px);
-      background:linear-gradient(90deg,var(--pink),var(--pink2),var(--pink));
-      background-size:200% auto;
-      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-      animation: shine 5s linear infinite;
-      text-shadow:0 6px 24px rgba(255,79,158,.55);
+      margin: 0; 
+      line-height: 1.1; 
+      font-weight: 900; 
+      letter-spacing: clamp(1px, 1vw, 3px); 
+      text-transform: uppercase;
+      font-size: clamp(32px, 8vw, 100px);
+      background: linear-gradient(45deg, #ff4f9e, #ca6292, #ffd6ec, #ff8fb3, #ff4f9e);
+      background-size: 400% 400%;
+      -webkit-background-clip: text; 
+      background-clip: text; 
+      -webkit-text-fill-color: transparent;
+      animation: titleGradient 6s ease-in-out infinite, titleGlow 4s ease-in-out infinite;
+      text-shadow: 0 0 30px rgba(251, 239, 245, 0.8);
+      filter: drop-shadow(0 0 20px rgba(255,79,158,.5));
+      position: relative;
+      transform-style: preserve-3d;
+      perspective: 1000px;
     }
-    @keyframes shine{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+
+    .title::before {
+      content: 'Hi, Tashu here!';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #fff, #ffe6f3, #fff);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: titleShine 4s ease-in-out infinite;
+      opacity: 0.3;
+      z-index: -1;
+      filter: blur(1px);
+    }
+
+    .title::after {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: -20px;
+      right: -20px;
+      bottom: -20px;
+      background: 
+        radial-gradient(circle at 30% 20%, rgba(255,79,158,.4) 0, transparent 60%),
+        radial-gradient(circle at 70% 80%, rgba(255,155,201,.4) 0, transparent 60%),
+        radial-gradient(circle at 20% 80%, rgba(255,79,158,.3) 0, transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(255,155,201,.3) 0, transparent 60%);
+      filter: blur(20px);
+      animation: titleAura 8s ease-in-out infinite;
+      z-index: -2;
+    }
+
+    @keyframes shine{
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* Title Animations */
+    @keyframes titleGradient {
+      0%, 100% { 
+        background-position: 0% 50%;
+      }
+      50% { 
+        background-position: 100% 50%;
+      }
+    }
+
+    @keyframes titleGlow {
+      0%, 100% { 
+        text-shadow: 0 0 30px rgba(255,79,158,.8);
+        filter: drop-shadow(0 0 20px rgba(255,79,158,.5));
+      }
+      50% { 
+        text-shadow: 0 0 50px rgba(255,79,158,1), 0 0 80px rgba(255,79,158,.6);
+        filter: drop-shadow(0 0 30px rgba(255,79,158,.8));
+      }
+    }
+
+    @keyframes titleShine {
+      0%, 100% { 
+        background-position: 0% 50%;
+        opacity: 0.3;
+      }
+      50% { 
+        background-position: 100% 50%;
+        opacity: 0.6;
+      }
+    }
+
+    @keyframes titleAura {
+      0%, 100% { 
+        opacity: 0.2;
+        transform: scale(1) rotate(0deg);
+      }
+      25% { 
+        opacity: 0.4;
+        transform: scale(1.05) rotate(90deg);
+      }
+      50% { 
+        opacity: 0.6;
+        transform: scale(1.1) rotate(180deg);
+      }
+      75% { 
+        opacity: 0.3;
+        transform: scale(1.05) rotate(270deg);
+      }
+    }
+
     .accent{
-      margin:14px auto 0; width:min(520px,80vw); height:10px; border-radius:999px;
-      background:linear-gradient(90deg, rgba(255,79,158,.9), rgba(255,155,201,.7), rgba(255,79,158,.9));
-      filter:blur(8px); opacity:.75; box-shadow:0 0 40px rgba(255,79,158,.55);
+      margin: clamp(12px, 2vw, 20px) auto 0; 
+      width: min(400px, 70vw); 
+      height: clamp(6px, 1vw, 12px); 
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,79,158,.9), rgba(255,155,201,.8), rgba(255,79,158,.9));
+      filter: blur(10px); 
+      opacity: 0.8; 
+      box-shadow: 0 0 50px rgba(255,79,158,.6);
+      animation: pulse 3s ease-in-out infinite;
     }
-    .chips{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:20px; }
-    .chips a{ text-decoration:none; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.05); }
+    }
+
+    .chips{ 
+      display: flex; 
+      gap: clamp(8px, 2vw, 16px); 
+      justify-content: center; 
+      flex-wrap: wrap; 
+      margin-top: clamp(20px, 4vw, 40px);
+    }
+
+    .chips a{ 
+      text-decoration: none; 
+      transition: transform 0.3s ease;
+    }
+
     .chip{
-      display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border-radius:999px;
-      font-weight:700; font-size:14px; letter-spacing:.5px; color:#fff;
-      background:linear-gradient(90deg,var(--pink),var(--pink2));
-      box-shadow:0 4px 14px rgba(255,79,158,.3); border:none; cursor:pointer;
-      transition:transform .2s ease, box-shadow .2s ease;
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px; 
+      padding: clamp(12px, 2.5vw, 18px) clamp(16px, 3vw, 24px); 
+      border-radius: 999px;
+      font-weight: 700; 
+      font-size: clamp(12px, 2.5vw, 16px); 
+      letter-spacing: 0.5px; 
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      box-shadow: 0 6px 20px rgba(255,79,158,.4); 
+      border: none; 
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+      animation: chipFloat 3s ease-in-out infinite;
     }
-    .chip:hover{ transform:translateY(-3px); box-shadow:0 8px 22px rgba(255,79,158,.4); }
-    .chip:active{ transform:scale(.95); }
+
+    /* Special styling for Photos button */
+    .photos-btn {
+      background: linear-gradient(135deg, #ff6b9d, #ff9bc9, #ffb3d9) !important;
+      box-shadow: 0 8px 25px rgba(255,107,157,.5) !important;
+      animation: photosGlow 4s ease-in-out infinite !important;
+      position: relative;
+    }
+
+    .photos-btn::before {
+      content: '✨';
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      font-size: 12px;
+      animation: sparkleRotate 2s linear infinite;
+      z-index: 2;
+    }
+
+    /* Special styling for Login button */
+    .login-btn {
+      background: linear-gradient(135deg, #ff4f9e, #ff7ab6, #ff9bc9) !important;
+      box-shadow: 0 8px 25px rgba(255,79,158,.6) !important;
+      animation: loginPulse 3s ease-in-out infinite !important;
+      position: relative;
+    }
+
+    .login-btn::before {
+      content: '🌟';
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      font-size: 12px;
+      animation: starTwinkle 1.5s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    .chip::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.4), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .chip::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,.1) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .chip:hover::before {
+      left: 100%;
+    }
+
+    .chip:hover::after {
+      opacity: 1;
+    }
+
+    .chip:hover{ 
+      transform: translateY(-6px) scale(1.08); 
+      box-shadow: 0 16px 40px rgba(255,79,158,.6);
+      filter: brightness(1.1) saturate(1.2);
+    }
+
+    /* Enhanced hover effects for special buttons */
+    .photos-btn:hover {
+      transform: translateY(-8px) scale(1.1) !important;
+      box-shadow: 0 20px 50px rgba(255,107,157,.8), 0 0 30px rgba(255,107,157,.4) !important;
+      filter: brightness(1.2) saturate(1.3) !important;
+      animation: photosGlow 2s ease-in-out infinite !important;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-8px) scale(1.1) !important;
+      box-shadow: 0 20px 50px rgba(255,79,158,.8), 0 0 30px rgba(255,79,158,.4) !important;
+      filter: brightness(1.2) saturate(1.3) !important;
+      animation: loginPulse 1.5s ease-in-out infinite !important;
+    }
+
+    .chip:active{ 
+      transform: scale(0.92); 
+      transition: transform 0.1s ease;
+    }
+
+    /* Floating animation for all chips */
+    @keyframes chipFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+
+    /* Special glow animation for Photos button */
+    @keyframes photosGlow {
+      0%, 100% { 
+        box-shadow: 0 8px 25px rgba(255,107,157,.5);
+        filter: brightness(1);
+      }
+      50% { 
+        box-shadow: 0 12px 35px rgba(255,107,157,.7), 0 0 20px rgba(255,107,157,.3);
+        filter: brightness(1.1);
+      }
+    }
+
+    /* Pulse animation for Login button */
+    @keyframes loginPulse {
+      0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 8px 25px rgba(255,79,158,.6);
+      }
+      50% { 
+        transform: scale(1.02);
+        box-shadow: 0 12px 35px rgba(255,79,158,.8), 0 0 25px rgba(255,79,158,.4);
+      }
+    }
+
+    /* Sparkle rotation animation for Photos button */
+    @keyframes sparkleRotate {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.2); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    /* Star twinkle animation for Login button */
+    @keyframes starTwinkle {
+      0%, 100% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      50% { 
+        transform: scale(1.3) rotate(180deg);
+        opacity: 0.7;
+      }
+    }
+
+    /* Particle effects for special buttons */
+    .photos-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.8) 0, transparent 50%),
+        radial-gradient(2px 2px at 80% 20%, rgba(255,155,201,.8) 0, transparent 50%),
+        radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,.6) 0, transparent 50%),
+        radial-gradient(1px 1px at 60% 80%, rgba(255,107,157,.6) 0, transparent 50%);
+      transform: translate(-50%, -50%);
+      animation: particleFloat 6s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .login-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(2px 2px at 30% 20%, rgba(255,255,255,.8) 0, transparent 50%),
+        radial-gradient(2px 2px at 70% 80%, rgba(255,79,158,.8) 0, transparent 50%),
+        radial-gradient(1px 1px at 50% 50%, rgba(255,155,201,.6) 0, transparent 50%),
+        radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,.6) 0, transparent 50%);
+      transform: translate(-50%, -50%);
+      animation: particleFloat 4s ease-in-out infinite reverse;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes particleFloat {
+      0%, 100% { 
+        transform: translate(-50%, -50%) rotate(0deg);
+        opacity: 0.3;
+      }
+      25% { 
+        transform: translate(-50%, -50%) rotate(90deg) scale(1.1);
+        opacity: 0.6;
+      }
+      50% { 
+        transform: translate(-50%, -50%) rotate(180deg) scale(0.9);
+        opacity: 0.8;
+      }
+      75% { 
+        transform: translate(-50%, -50%) rotate(270deg) scale(1.1);
+        opacity: 0.6;
+      }
+    }
+
+    /* ===== LOADING ANIMATION ===== */
+    .loading {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      display: grid;
+      place-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loading.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 768px) {
+      .title {
+        font-size: clamp(28px, 12vw, 60px);
+        letter-spacing: 1px;
+      }
+      
+      .chips {
+        gap: 12px;
+        margin-top: 30px;
+      }
+      
+      .chip {
+        padding: 14px 20px;
+        font-size: 14px;
+      }
+      
+      .floating-elements {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .title {
+        font-size: clamp(24px, 15vw, 50px);
+      }
+      
+      .chips {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .chip {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+      }
+      
+      .content {
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .title {
+        font-size: clamp(20px, 18vw, 40px);
+      }
+      
+      .chip {
+        padding: 12px 16px;
+        font-size: 13px;
+      }
+    }
+
+    /* ===== ACCESSIBILITY ===== */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ===== DARK MODE SUPPORT ===== */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --glass: rgba(255,255,255,.9);
+      }
+    }
+
+    /* Title particle effects */
+    .title-particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -3;
+    }
+
+    .title-particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: radial-gradient(circle, rgba(255,79,158,.8), transparent);
+      border-radius: 50%;
+      animation: particleFloat 10s ease-in-out infinite;
+      box-shadow: 0 0 10px rgba(255,79,158,.5);
+    }
+
+    .title-particle:nth-child(1) {
+      top: 15%;
+      left: 15%;
+      animation-delay: 0s;
+    }
+
+    .title-particle:nth-child(2) {
+      top: 25%;
+      right: 20%;
+      animation-delay: 2s;
+    }
+
+    .title-particle:nth-child(3) {
+      bottom: 25%;
+      left: 25%;
+      animation-delay: 4s;
+    }
+
+    .title-particle:nth-child(4) {
+      bottom: 15%;
+      right: 15%;
+      animation-delay: 6s;
+    }
+
+    .title-particle:nth-child(5) {
+      top: 45%;
+      left: 10%;
+      animation-delay: 8s;
+    }
+
+    .title-particle:nth-child(6) {
+      top: 55%;
+      right: 10%;
+      animation-delay: 10s;
+    }
+
+    @keyframes particleFloat {
+      0%, 100% { 
+        transform: translateY(0px) scale(1);
+        opacity: 0.4;
+      }
+      25% { 
+        transform: translateY(-20px) scale(1.3);
+        opacity: 0.8;
+      }
+      50% { 
+        transform: translateY(-35px) scale(0.7);
+        opacity: 0.6;
+      }
+      75% { 
+        transform: translateY(-15px) scale(1.1);
+        opacity: 0.9;
+      }
+    }
+
+    /* ===== SOUND CONTROL BUTTON ===== */
+    .sound-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 6px 20px rgba(255,79,158,.5);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: soundBtnFloat 3s ease-in-out infinite;
+    }
+
+    .sound-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 10px 30px rgba(255,79,158,.7);
+      filter: brightness(1.1);
+    }
+
+    .sound-btn:active {
+      transform: scale(0.95);
+    }
+
+    .sound-btn.muted {
+      background: linear-gradient(135deg, #999, #ccc);
+      box-shadow: 0 6px 20px rgba(153,153,153,.5);
+    }
+
+    .sound-btn.muted:hover {
+      box-shadow: 0 10px 30px rgba(153,153,153,.7);
+    }
+
+    @keyframes soundBtnFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* ===== PRINT STYLES ===== */
+    @media print {
+      .video-track,
+      .overlay,
+      .sparkles,
+      .floating-elements,
+      .loading,
+      .sound-btn {
+        display: none !important;
+      }
+      
+      .content {
+        position: static;
+        color: #000;
+      }
+      
+      .title {
+        -webkit-text-fill-color: #000;
+        color: #000;
+      }
+    }
   </style>
 </head>
-  <audio id="bg-music" autoplay loop>
-    <source src="gallery/tashu1.mp4" type="audio/mpeg">
-   
-  </audio>
 <body>
+  <!-- Loading screen -->
+  <div class="loading" id="loading">
+    <div class="loading-spinner"></div>
+  </div>
+
   <!-- SCROLL LAYER: only this scrolls -->
   <div class="video-track">
-    <video class="bg-video" autoplay muted loop playsinline>
+    <video class="bg-video" autoplay loop playsinline preload="auto">
       <source src="gallery/tashu1.mp4" type="video/mp4">
+      Your browser does not support the video tag.
     </video>
   </div>
 
   <!-- CONSTANT LAYERS -->
   <div class="overlay"></div>
   <div class="sparkles" aria-hidden="true"></div>
+  <div class="floating-elements">
+    <div class="floating-element float-1"></div>
+    <div class="floating-element float-2"></div>
+  </div>
 
-  <div class="content" role="region" aria-label="Intro">
-    <div>
-      <h1 class="title">hii, Tashu here</h1>
+  <!-- SOUND CONTROL BUTTON -->
+  <button id="soundBtn" class="sound-btn">🔊</button>
+
+  <div class="content" role="region" aria-label="Welcome">
+    <div class="content-inner">
+      <h1 class="title">
+        Hi, Tashu here!
+        <div class="title-particles">
+          <div class="title-particle"></div>
+          <div class="title-particle"></div>
+          <div class="title-particle"></div>
+          <div class="title-particle"></div>
+          <div class="title-particle"></div>
+          <div class="title-particle"></div>
+        </div>
+      </h1>
       <div class="accent" aria-hidden="true"></div>
-      <div class="chips" aria-label="links">
-        <a href="pass.html"><span class="chip">💖 Photos</span></a>
-        <a href="contact.html"><span class="chip">📩 Contact</span></a>
-        <a href="login.html"><span class="chip">📲LOGIN🌺</span></a>
-      </div>
+              <div class="chips" aria-label="Navigation links">
+          <a href="pass.html" aria-label="View photos">
+            <span class="chip photos-btn">💖 Photos</span>
+          </a>
+          <a href="contact.html" aria-label="Contact information">
+            <span class="chip">📩 Contact</span>
+          </a>
+          <a href="login.html" aria-label="Login page">
+            <span class="chip login-btn">📲 LOGIN 🌺</span>
+          </a>
+        </div>
     </div>
   </div>
+
+  <script src="scripts.js"></script>
 </body>
 </html>
