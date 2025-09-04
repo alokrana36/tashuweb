@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Hand Hearts — tashu Edition</title>
+  <meta name="description" content="Romantic hearts + animated tashu that follows your hand. Works in-browser on phone and desktop." />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --rose:#ff2e6a;
+      --heart:#ffb6d0;           /* light pink hearts */
+      --tahsu1:#ff99c8;          /* gradient start */
+      --tahsu2:#ff4d94;          /* gradient mid */
+      --tahsu3:#ffb6d0;          /* gradient end */
+      --ink:#0f172a;
+      --muted:#475569;
+      --safe-top:env(safe-area-inset-top,0px);
+      --safe-right:env(safe-area-inset-right,0px);
+      --safe-bottom:env(safe-area-inset-bottom,0px);
+      --safe-left:env(safe-area-inset-left,0px);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    html{overflow:hidden}
+    body{
+      margin:0;
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background:linear-gradient(#fff1f5,#ffd6e7);
+    }
+    .wrap{width:100vw;height:100vh}
+    .frame{position:relative;width:100vw;height:100vh;background:#000;overflow:hidden}
+    video,canvas,.overlay{position:absolute;inset:0;width:100%;height:100%}
+    video{object-fit:cover;transform:scaleX(-1)}
+    canvas{pointer-events:none}
+    .controls{
+      position:absolute;left:max(10px,var(--safe-left));right:max(10px,var(--safe-right));top:calc(10px + var(--safe-top));
+      display:flex;flex-wrap:wrap;gap:8px;align-items:center;z-index:10
+    }
+    .panel{display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.85);backdrop-filter:blur(6px);padding:8px;border-radius:12px;border:1px solid rgba(2,6,23,.1)}
+    button{border:0;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;touch-action:manipulation}
+    .primary{background:var(--rose);color:#fff}
+    .dark{background:#0f172a;color:#fff}
+    .ghost{background:#fff;border:1px solid #e2e8f0;color:#0f172a}
+    label{font-size:14px;color:var(--muted);display:inline-flex;align-items:center;gap:8px}
+    input[type=range]{accent-color:var(--rose)}
+    .status{position:absolute;left:max(10px,var(--safe-left));right:max(10px,var(--safe-right));bottom:calc(10px + var(--safe-bottom));display:grid;gap:8px;z-index:10}
+    .status pre{margin:0;background:rgba(255,255,255,.85);padding:8px;border-radius:10px;font-size:12px;white-space:pre-wrap;color:#334155;backdrop-filter:blur(6px)}
+    .status .error{background:rgba(254,226,226,.9);border:1px solid #fecaca;color:#7f1d1d;padding:8px;border-radius:10px}
+
+    /* ======= Animated tashu badge ======= */
+    .tahsu{
+      position:absolute;inset:0 auto auto 0;
+      transform:translate(-50%,-50%);
+      z-index:9;pointer-events:none;opacity:0;transition:opacity .25s ease;
+      font-family:'Pacifico',cursive;font-weight:400;
+      font-size:clamp(30px,7vw,64px);letter-spacing:.5px;line-height:1;
+      background:linear-gradient(90deg,var(--tahsu1),var(--tahsu2),var(--tahsu3),var(--tahsu1));
+      background-size:220% auto;
+      -webkit-background-clip:text;background-clip:text;
+      -webkit-text-fill-color:transparent;
+      animation:shimmer 5s linear infinite, float 3.5s ease-in-out infinite;
+      text-shadow:
+        0 0 8px rgba(255,182,208,.85),
+        0 0 22px rgba(255,105,180,.55),
+        0 6px 16px rgba(0,0,0,.35);
+      -webkit-text-stroke:1px rgba(255,255,255,.25);
+      padding:.1em .25em;border-radius:12px;backdrop-filter:blur(2px) saturate(1.1);
+      transform-origin:50% 60%;
+    }
+    .tahsu .heart{margin-left:.25em;filter:drop-shadow(0 0 8px rgba(255,182,208,.9));animation:beat 1.3s ease-in-out infinite}
+    .tahsu .heart:nth-child(2){animation-delay:.2s}
+
+    /* sparkles */
+    .tahsu .sparkle{
+      position:absolute;width:6px;height:6px;border-radius:50%;
+      background:radial-gradient(circle,#fff 0%, #ffd1e4 60%, transparent 70%);
+      box-shadow:0 0 8px rgba(255,182,208,.9);
+      animation:twinkle 1.8s ease-in-out infinite;pointer-events:none;
+    }
+    .t1{top:-12px;left:-18px;animation-delay:0s}
+    .t2{top:-18px;left:32px;animation-delay:.3s}
+    .t3{top:10px;left:72px;animation-delay:.6s}
+    .t4{top:28px;left:-8px;animation-delay:.9s}
+    .t5{top:36px;left:48px;animation-delay:1.2s}
+
+    @keyframes shimmer{0%{background-position:0% center}100%{background-position:220% center}}
+    @keyframes float{0%,100%{transform:translate(-50%,-50%) rotate(0deg)}50%{transform:translate(-50%,-52%) rotate(-2deg)}}
+    @keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+    @keyframes twinkle{0%,100%{transform:scale(.7);opacity:.5}50%{transform:scale(1.1);opacity:1}}
+
+    @media (min-width:1024px){
+      .frame{box-shadow:0 20px 50px rgba(0,0,0,.25);border:1px solid rgba(244,63,94,.25);border-radius:16px}
+    }
+    @media (prefers-reduced-motion:reduce){
+      .tahsu,.tahsu .heart,.tahsu .sparkle{animation:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="frame" id="app">
+      <video id="video" playsinline muted></video>
+      <canvas id="fx"></canvas>
+      <div id="romanceLayer" class="overlay" hidden></div>
+
+      <!-- Animated tashu -->
+      <div id="tahsu" class="tahsu" aria-label="tashu hearts">
+        tashu <span class="heart">💖</span><span class="heart">❤️</span>
+        <span class="sparkle t1"></span>
+        <span class="sparkle t2"></span>
+        <span class="sparkle t3"></span>
+        <span class="sparkle t4"></span>
+        <span class="sparkle t5"></span>
+      </div>
+
+      <div class="controls">
+        <div class="panel">
+          <button id="btnStart" class="primary">Enable Camera</button>
+          <button id="btnStop" class="dark" hidden>Stop</button>
+          <button id="btnToggle" class="ghost">Romance: ON</button>
+          <label>Intensity
+            <input id="intensity" type="range" min="0" max="100" value="70" />
+            <span id="intensityVal" style="min-width:2ch;text-align:right;font-variant-numeric:tabular-nums;">70</span>
+          </label>
+          <label><input id="debug" type="checkbox" /> Debug</label>
+          <button id="btnDemo" class="ghost">Demo</button>
+          <button id="btnDiag" class="ghost">Diag</button>
+          <button id="btnFull" class="ghost">Fullscreen</button>
+          <button id="btnCam" class="ghost">Switch Cam</button>
+          <button id="btnPower" class="ghost" title="Lower CPU/GPU load">Low Power: OFF</button>
+        </div>
+      </div>
+
+      <div class="status" id="statusWrap" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { FilesetResolver, HandLandmarker } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.10/vision_bundle.mjs";
+
+    // ---------- DOM ----------
+    const els = {
+      app: document.getElementById('app'),
+      video: document.getElementById('video'),
+      canvas: document.getElementById('fx'),
+      rom: document.getElementById('romanceLayer'),
+      tahsu: document.getElementById('tahsu'),
+      btnStart: document.getElementById('btnStart'),
+      btnStop: document.getElementById('btnStop'),
+      btnToggle: document.getElementById('btnToggle'),
+      intensity: document.getElementById('intensity'),
+      intensityVal: document.getElementById('intensityVal'),
+      debug: document.getElementById('debug'),
+      btnDemo: document.getElementById('btnDemo'),
+      btnDiag: document.getElementById('btnDiag'),
+      btnFull: document.getElementById('btnFull'),
+      btnCam: document.getElementById('btnCam'),
+      btnPower: document.getElementById('btnPower'),
+      status: document.getElementById('statusWrap'),
+    };
+
+    // ---------- State ----------
+    let cameraOn = false;
+    let romanceOn = true;
+    let demoMode = false;
+    let lowPower = false;
+    let intensity = (matchMedia('(max-width: 480px)').matches ? 55 : 70);
+    let stream = null;
+    let currentFacing = 'user'; // 'user' | 'environment'
+    let landmarker = null;
+    const lastPos = { x:null, y:null, t:null };
+    const pinchActive = { on:false };
+    const hearts = [];
+    const tahsuPos = { x:null, y:null };
+
+    const MODEL_URL = "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
+    const WASM_BASE = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.10/wasm";
+
+    // ---------- Particles ----------
+    class Heart{
+      constructor(x,y,q=1){
+        this.x=x; this.y=y;
+        this.vx=(Math.random()-0.5)*(0.8+q*0.2);
+        this.vy=-1.8-Math.random()*(0.8+q*0.3);
+        this.alpha=1;
+        this.size=16+Math.random()*(22+q*6);
+        this.spin=(Math.random()-0.5)*0.1;
+        this.rot=Math.random()*Math.PI;
+      }
+      update(dt){
+        this.x+=this.vx*dt; this.y+=this.vy*dt; this.vy+=0.002*dt; this.alpha-=0.0007*dt; this.rot+=this.spin*dt;
+        return this.alpha>0;
+      }
+    }
+    function drawHeart(ctx,x,y,size,alpha){
+      ctx.save();
+      ctx.globalAlpha=Math.max(0,Math.min(1,alpha));
+      ctx.translate(x,y);
+      ctx.rotate(Math.sin(x+y)*0.05);
+      ctx.beginPath();
+      const s=size/32;
+      ctx.moveTo(0*s,12*s);
+      ctx.bezierCurveTo(-16*s,-8*s,-16*s,12*s,0*s,28*s);
+      ctx.bezierCurveTo(16*s,12*s,16*s,-8*s,0*s,12*s);
+      ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--heart')||'#ffb6d0';
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // ---------- Utils ----------
+    const isSecure = location.protocol==='https:' || ['localhost','127.0.0.1','::1'].includes(location.hostname);
+    const hasGUM = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+    function setStatus(msg){ if(!msg){els.status.innerHTML='';return;} const pre=document.createElement('pre'); pre.textContent=msg; els.status.appendChild(pre);}
+    function setError(msg){ if(!msg)return; const div=document.createElement('div'); div.className='error'; div.textContent=msg; els.status.appendChild(div); }
+    function clearStatus(){ els.status.innerHTML=''; }
+
+    function resizeCanvas(){
+      const c=els.canvas;
+      const maxDpr = lowPower ? 1 : Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+      const rect=c.getBoundingClientRect();
+      const cssW=Math.max(1,rect.width), cssH=Math.max(1,rect.height);
+      c.width=Math.round(cssW*maxDpr);
+      c.height=Math.round(cssH*maxDpr);
+      const ctx=c.getContext('2d');
+      ctx.setTransform(maxDpr,0,0,maxDpr,0,0);
+    }
+    function explainError(e){
+      const name=e?.name||'Error'; const msg=e?.message||'';
+      if(name==='NotAllowedError'||name==='SecurityError') return 'Camera permission was denied.';
+      if(name==='NotFoundError'||name==='DevicesNotFoundError') return 'No camera device was found.';
+      if(name==='NotReadableError'||name==='TrackStartError') return 'Camera is in use by another application.';
+      if(name==='OverconstrainedError'||name==='ConstraintNotSatisfiedError') return "Requested camera resolution isn't available.";
+      return `${name}: ${msg || 'Could not access the camera.'}`;
+    }
+
+    // ---------- Camera ----------
+    async function startCamera(){
+      demoMode=false; clearStatus(); setStatus('Starting camera…');
+      if(!isSecure){ setError('Use HTTPS or localhost for camera.'); return; }
+      if(!hasGUM){ setError("Your browser doesn't support camera access."); return; }
+      try{
+        const constraints={
+          video:{
+            facingMode:{ exact: currentFacing },
+            width:{ ideal: 1280 }, height:{ ideal: 720 },
+            frameRate:{ ideal: lowPower? 24 : 30, max: lowPower? 30 : 60 }
+          },
+          audio:false
+        };
+        stream = await navigator.mediaDevices.getUserMedia(constraints).catch(async ()=>{
+          return navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ ideal: currentFacing } }, audio:false });
+        });
+        els.video.srcObject=stream; await els.video.play();
+        onVideoReady();
+        cameraOn=true; setStatus('Camera is live.');
+      }catch(e){
+        setError(explainError(e));
+        if(e?.name==='NotAllowedError'||e?.name==='SecurityError'){
+          enableDemo("Demo mode: move your finger (mouse) to paint hearts. 'P' = overlay, Space = burst.");
+        }
+      }
+      toggleButtons();
+    }
+    function stopCamera(){
+      if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
+      els.video.srcObject=null; cameraOn=false; setStatus('Camera stopped.'); toggleButtons();
+    }
+    function toggleButtons(){ els.btnStart.hidden=cameraOn; els.btnStop.hidden=!cameraOn; }
+    function onVideoReady(){ resizeCanvas(); updateRomance(); }
+    function enableDemo(msg){ demoMode=true; if(msg) setStatus(msg); toggleButtons(); }
+    async function switchCamera(){
+      currentFacing = (currentFacing==='user' ? 'environment' : 'user');
+      if(cameraOn){ stopCamera(); await startCamera(); }
+    }
+
+    // ---------- MediaPipe ----------
+    async function loadLandmarker(){
+      const vision = await FilesetResolver.forVisionTasks(WASM_BASE);
+      landmarker = await HandLandmarker.createFromOptions(vision, {
+        baseOptions:{ modelAssetPath: MODEL_URL },
+        runningMode:'VIDEO', numHands:1
+      });
+    }
+
+    // ---------- Main Loop ----------
+    const ctx = els.canvas.getContext('2d');
+    let last = performance.now();
+    const demoMouse = { x:null, y:null };
+
+    function spawnBurst(x,y,n=30){
+      const amt = Math.round(n*(0.5+intensity/100));
+      for(let i=0;i<amt;i++){ hearts.push(new Heart(x+(Math.random()-0.5)*40, y+(Math.random()-0.5)*40, intensity/100)); }
+    }
+    function placeTahsu(x,y,angle=0){
+      const mirroredX = (els.canvas.clientWidth - x);
+      els.tahsu.style.left = `${mirroredX}px`;
+      els.tahsu.style.top  = `${y}px`;
+      els.tahsu.style.opacity='1';
+      els.tahsu.style.transform = `translate(-50%,-50%) rotate(${angle}deg)`;
+    }
+
+    function loop(){
+      const now=performance.now(), dt=now-last; last=now;
+      ctx.clearRect(0,0,els.canvas.width,els.canvas.height);
+
+      const usingCamera = cameraOn && landmarker && els.video.readyState>=2;
+      let showedTahsu=false;
+
+      if(usingCamera){
+        try{
+          const res = landmarker.detectForVideo(els.video, now);
+          const lm = res?.landmarks?.[0];
+          if(lm){
+            const toPX = (pt)=>({ x: pt.x*els.canvas.clientWidth, y: pt.y*els.canvas.clientHeight });
+            const pIndex = toPX(lm[8]);
+            const pThumb = toPX(lm[4]);
+            const pWrist = toPX(lm[0]);
+
+            if(els.debug.checked){
+              ctx.save(); ctx.fillStyle='rgba(255,0,128,.9)';
+              [pIndex,pThumb,pWrist].forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,6,0,Math.PI*2); ctx.fill(); });
+              ctx.restore();
+            }
+
+            const pinch = (Math.hypot(pIndex.x-pThumb.x, pIndex.y-pThumb.y)/Math.max(els.canvas.clientWidth, els.canvas.clientHeight))<0.04;
+            if(pinch && !pinchActive.on) pinchActive.on=true;
+            if(!pinch && pinchActive.on){ pinchActive.on=false; romanceOn=!romanceOn; updateRomance(); spawnBurst(pIndex.x,pIndex.y,40); }
+
+            if(lastPos.x!=null){
+              const dtSec=(now-lastPos.t)/1000;
+              const vx=(pWrist.x-lastPos.x)/(dtSec||1e-3), vy=(pWrist.y-lastPos.y)/(dtSec||1e-3);
+              if(Math.hypot(vx,vy)>2200) spawnBurst(pIndex.x,pIndex.y,25);
+            }
+            lastPos.x=pWrist.x; lastPos.y=pWrist.y; lastPos.t=now;
+
+            const density=Math.max(1,Math.round(intensity/14));
+            for(let i=0;i<density;i++) hearts.push(new Heart(pIndex.x+(Math.random()-0.5)*10, pIndex.y+(Math.random()-0.5)*10, intensity/100));
+
+            const targetX=pIndex.x, targetY=pIndex.y;
+            if(tahsuPos.x==null){ tahsuPos.x=targetX; tahsuPos.y=targetY; }
+            const ease = lowPower ? 0.12 : 0.18;
+            const dx=targetX-tahsuPos.x, dy=targetY-tahsuPos.y;
+            tahsuPos.x += dx*ease; tahsuPos.y += dy*ease;
+            const angle = Math.max(-6, Math.min(6, (Math.atan2(dy,dx)*180/Math.PI)/6 ));
+            placeTahsu(tahsuPos.x, tahsuPos.y, angle);
+            showedTahsu=true;
+          }
+        }catch{ /* ignore frame errors */ }
+      }else if(demoMode){
+        const mx=demoMouse.x??els.canvas.clientWidth/2, my=demoMouse.y??els.canvas.clientHeight/2;
+        const pIndex={x:mx,y:my};
+        const angle=Math.sin(now/400)*0.6;
+        const pThumb={x:pIndex.x+Math.cos(angle)*35,y:pIndex.y+Math.sin(angle)*35};
+        const pWrist={x:pIndex.x-20,y:pIndex.y+40};
+
+        if(els.debug.checked){
+          ctx.save(); ctx.fillStyle='rgba(0,120,255,.8)';
+          [pIndex,pThumb,pWrist].forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,6,0,Math.PI*2); ctx.fill(); });
+          ctx.restore();
+        }
+
+        const pinch=(Math.hypot(pIndex.x-pThumb.x,pIndex.y-pThumb.y)/Math.max(els.canvas.clientWidth,els.canvas.clientHeight))<0.04;
+        if(pinch && !pinchActive.on) pinchActive.on=true;
+        if(!pinch && pinchActive.on){ pinchActive.on=false; romanceOn=!romanceOn; updateRomance(); spawnBurst(pIndex.x,pIndex.y,40); }
+
+        if(lastPos.x!=null){
+          const dtSec=(now-lastPos.t)/1000;
+          const vx=(pWrist.x-lastPos.x)/(dtSec||1e-3), vy=(pWrist.y-lastPos.y)/(dtSec||1e-3);
+          if(Math.hypot(vx,vy)>2200) spawnBurst(pIndex.x,pIndex.y,25);
+        }
+        lastPos.x=pWrist.x; lastPos.y=pWrist.y; lastPos.t=now;
+
+        const density=Math.max(1,Math.round(intensity/14));
+        for(let i=0;i<density;i++) hearts.push(new Heart(pIndex.x+(Math.random()-0.5)*10, pIndex.y+(Math.random()-0.5)*10, intensity/100));
+
+        const targetX=pIndex.x, targetY=pIndex.y;
+        if(tahsuPos.x==null){ tahsuPos.x=targetX; tahsuPos.y=targetY; }
+        const dx=targetX-tahsuPos.x, dy=targetY-tahsuPos.y;
+        tahsuPos.x+=dx*0.18; tahsuPos.y+=dy*0.18;
+        placeTahsu(tahsuPos.x,tahsuPos.y,(Math.atan2(dy,dx)*180/Math.PI)/6);
+        showedTahsu=true;
+      }
+
+      // render hearts (mirrored)
+      ctx.save(); ctx.translate(els.canvas.clientWidth,0); ctx.scale(-1,1);
+      const next=[];
+      for(const h of hearts){ if(h.update(dt)){ drawHeart(ctx,h.x,h.y,h.size,h.alpha); next.push(h); } }
+      hearts.length=0; hearts.push(...next);
+      ctx.restore();
+
+      if(!showedTahsu && !demoMode) els.tahsu.style.opacity='0';
+
+      requestAnimationFrame(loop);
+    }
+
+    // ---------- UI wires ----------
+    function wireUI(){
+      els.btnStart.addEventListener('click', startCamera);
+      els.btnStop.addEventListener('click', stopCamera);
+      els.btnToggle.addEventListener('click', ()=>{ romanceOn=!romanceOn; updateRomance(); });
+      els.btnDemo.addEventListener('click', ()=>{ if(cameraOn) stopCamera(); enableDemo('Demo mode enabled. Move your finger (mouse) to paint hearts.'); });
+      els.btnDiag.addEventListener('click', runDiagnostics);
+      els.btnFull.addEventListener('click', toggleFullscreen);
+      els.btnCam.addEventListener('click', switchCamera);
+      els.btnPower.addEventListener('click', ()=>{
+        lowPower=!lowPower; els.btnPower.textContent = `Low Power: ${lowPower?'ON':'OFF'}`;
+        resizeCanvas();
+        if(cameraOn){ startCamera(); }
+      });
+      els.intensity.addEventListener('input', (e)=>{ intensity=parseInt(e.target.value,10)||0; els.intensityVal.textContent=String(intensity); updateRomance(); });
+
+      // demo pointer (touch/mouse)
+      window.addEventListener('pointermove', (e)=>{
+        const rect=els.canvas.getBoundingClientRect();
+        const x=(e.clientX-rect.left);
+        const y=(e.clientY-rect.top);
+        demoMouse.x = Math.max(0, Math.min(rect.width, x));
+        demoMouse.y = Math.max(0, Math.min(rect.height, y));
+      });
+      window.addEventListener('keydown', (e)=>{
+        if(e.key.toLowerCase()==='p'){ romanceOn=!romanceOn; updateRomance(); }
+        if(e.key===' '){
+          const rect=els.canvas.getBoundingClientRect();
+          const x=demoMouse.x??rect.width/2, y=demoMouse.y??rect.height/2;
+          spawnBurst(x,y,35);
+        }
+      });
+      window.addEventListener('resize', resizeCanvas);
+      window.addEventListener('orientationchange', resizeCanvas);
+      els.video.addEventListener('loadedmetadata', resizeCanvas);
+    }
+
+    // ---------- Cosmetics / System ----------
+    function updateRomance(){
+      els.btnToggle.textContent=`Romance: ${romanceOn?'ON':'OFF'}`;
+      els.rom.hidden=!romanceOn;
+      const k=(0.55+(intensity/100)*0.25), v=(0.35+(intensity/100)*0.25);
+      els.rom.style.background=
+        `radial-gradient(ellipse at 30% 20%, rgba(255,130,172,${k}), transparent 55%),
+         radial-gradient(ellipse at 70% 80%, rgba(255,190,220,${k}), transparent 60%),
+         radial-gradient(circle at center, transparent 60%, rgba(0,0,0,${v}) 100%)`;
+      els.rom.style.backdropFilter=`blur(2px) saturate(${1.2 + intensity/250}) hue-rotate(${intensity/8}deg) brightness(${1.05 + intensity/300})`;
+    }
+    function runDiagnostics(){
+      clearStatus();
+      const ready = els.video.readyState>=2;
+      const tests=[
+        {name:'Secure context (HTTPS/localhost)', pass:isSecure, detail:isSecure?'OK':'Use HTTPS/GitHub Pages'},
+        {name:'getUserMedia support', pass:hasGUM, detail:hasGUM?'OK':'Not supported'},
+        {name:'Video ready', pass:ready, detail:ready?'OK':'Waiting metadata'},
+        {name:'Canvas DPR sized', pass:els.canvas.width>0, detail:els.canvas.width>0?`${els.canvas.width}×${els.canvas.height}`:'Not ready'},
+        {name:'MediaPipe loaded', pass:!!landmarker, detail:landmarker?'OK':'Loading or failed'}
+      ];
+      for(const t of tests){ setStatus(`${t.pass?'✅':'❌'} ${t.name} — ${t.detail}`); }
+    }
+    function isFullscreen(){ return document.fullscreenElement || document.webkitFullscreenElement; }
+    function toggleFullscreen(){
+      if(!isFullscreen()){
+        (els.app.requestFullscreen || els.app.webkitRequestFullscreen)?.call(els.app);
+      }else{
+        (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
+      }
+    }
+
+    // ---------- Init ----------
+    async function init(){
+      els.intensity.value=String(intensity);
+      els.intensityVal.textContent=String(intensity);
+      updateRomance();
+      wireUI();
+      const vision = await FilesetResolver.forVisionTasks(WASM_BASE);
+      landmarker = await HandLandmarker.createFromOptions(vision, {
+        baseOptions:{ modelAssetPath: MODEL_URL },
+        runningMode:'VIDEO', numHands:1
+      });
+      resizeCanvas();
+      requestAnimationFrame(loop);
+    }
+    init();
+  </script>
+</body>
+</html>
